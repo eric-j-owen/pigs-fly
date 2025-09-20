@@ -1,10 +1,14 @@
 function _init()
-    debug = "debug"
+    log('test')
 end
 
 function _update()
 end
 
 function _draw()
-    print(debug, 64, 24, 7)
+    cls(0)
+end
+
+function log(txt)
+    printh(txt, "log", true)
 end
