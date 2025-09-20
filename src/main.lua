@@ -1,5 +1,5 @@
 function _init()
-    log('test')
+    log('init')
 end
 
 function _update()
@@ -7,8 +7,5 @@ end
 
 function _draw()
     cls(0)
-end
-
-function log(txt)
-    printh(txt, "log", true)
+    cprnt('pigs fly')
 end
