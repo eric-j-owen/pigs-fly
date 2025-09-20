@@ -1,12 +1,16 @@
 Entity = {
-    x = 0,
-    y = 0,
-    spr = nil, --sprite
-    w = 8, --width
-    h = 0, --height
-    dx = 0, --change in x
-    dy = 0, --change in y
-    acc = 0 --acceleration
+    x      = 0,
+    y      = 0,
+    spr    = nil,  --sprite
+    w      = 8,    --width
+    h      = 0,    --height
+    dx     = 0,    --change in x
+    dy     = 0,    --change in y
+    max_dx = 0,
+    max_dy = 0,
+    acc    = 0,    --acceleration
+    g      = 0,    --gravity
+    f      = 0     --friction
 }
 
 --constructor
