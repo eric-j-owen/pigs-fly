@@ -11,7 +11,6 @@ Particle = {
     grav   = false,  --gravity
     grow   = false,  --particle size grows
     shrink = false,  --particle size shrinks
-    fade   = false,  --set opacity based on t/die
 }
 
 function Particle:new(o)

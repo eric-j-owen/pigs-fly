@@ -14,8 +14,6 @@ p1 = Entity:new({
     acc    = 1,
     max_dx = .75,
     max_dy = .75,
-    f      = 0.85,
-    g      = 0.03,
 })
 
 function p1:update()
@@ -55,24 +53,29 @@ function p1:update()
     end
 
     --spawn jet fx
-    local clrs = {7,10,9,8,5}
+    local thrust_clrs = {7,10,9,8,5}
+    local idle_clrs = {6,5,5,5}
     local die = 15+rnd(7)
     local off_y = s.dy < 0 and 8 or 0
     local off_x = s.dx < 0 and 8 or 0
+    local r = 1
+    --flip direction based on y direction 
+    local dy = .5
+    if s.dy > 0 then dy *= -1 end
+    
     -- spawn_parts(eff,x,y,r, c_tbl, die, dx,dy,grav,grow,shrink)
     if isFalling then
-        Fx:spawn_parts(Fx.jet_idle, p1.x+4,p1.y,.5, {5},5+rnd(20), rnd(.5)-.25,-.5)
+        Fx:spawn_parts(Fx.jet_idle, p1.x+4,p1.y,.5, idle_clrs,5+rnd(20), rnd(.5)-.25,dy)
     elseif left then
-        Fx:spawn_parts(Fx.jet_thrust, p1.x+off_x,p1.y+off_y,1.5,clrs,die, rnd(.5)-.25,-.5)
+        Fx:spawn_parts(Fx.jet_thrust, p1.x+off_x,p1.y+off_y,r,thrust_clrs,die, rnd(.5)-.25,dy,false,true)
     elseif right then
-        Fx:spawn_parts(Fx.jet_thrust, p1.x+off_x,p1.y+off_y,1.5,clrs,die, rnd(.5)-.25,-.5)
+        Fx:spawn_parts(Fx.jet_thrust, p1.x+off_x,p1.y+off_y,r,thrust_clrs,die, rnd(.5)-.25,dy,false,true)
     elseif up then
-        Fx:spawn_parts(Fx.jet_thrust, p1.x+3,p1.y+10,1.5,clrs,die, rnd(.5)-.25,.5)
+        Fx:spawn_parts(Fx.jet_thrust, p1.x+3,p1.y+10,r,thrust_clrs,die, rnd(.5)-.25,dy,false,true)
     elseif down then
-        Fx:spawn_parts(Fx.jet_thrust, p1.x+3,p1.y-4,1.5,clrs,die, rnd(.5)-.25,-.5)
-
+        Fx:spawn_parts(Fx.jet_thrust, p1.x+3,p1.y-4,r,thrust_clrs,die, rnd(.5)-.25,dy,false,true)
     else
-        Fx:spawn_parts(Fx.jet_idle, p1.x+4,p1.y+4,.5, {5},5+rnd(20), rnd(1)-.5,.2)
+        Fx:spawn_parts(Fx.jet_idle, p1.x+4,p1.y+4,.5, idle_clrs,5+rnd(20), rnd(1)-.5,.2)
     end
     
     
@@ -91,13 +94,15 @@ function p1:update()
     end
 
     --clamp movement speed
-    s.dx = mid(-s.max_dx, s.dx, s.max_dx)
-    if down then
-        s.dy = mid(-s.max_dy, s.dy, s.max_dy)
-    else
-        s.dy = mid(-s.max_dy, s.dy, s.max_dy - 0.5) --adjusts the falling speed
+    s.dx = mid(-s.max_dx, s.dx, s.max_dx)            --general x axis speed clamp
+    if p1.dy<0 then 
+        s.dy = mid(-s.max_dy, s.dy, s.max_dy)        --general y axis speed clamp
+    elseif isFalling then 
+        s.dy = mid(-s.max_dy, s.dy, s.max_dy - 0.5)  --speed when floating down
+    elseif down then                                 --speed when jet pack down
+         s.dy = mid(-s.max_dy, s.dy, s.max_dy + .3)
     end
-    
+   
 
     --apply movement to coordinates
     s.x += s.dx
