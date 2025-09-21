@@ -7,7 +7,7 @@ local SPR_FALL = 5
 local SPR_DWN_TURN = 6
 
 
-p = Entity:new({
+p1 = Entity:new({
     x      = 64,
     y      = 64,
     spr    = SPR_IDL,
@@ -18,27 +18,26 @@ p = Entity:new({
     g      = 0.03,
 })
 
-function p:update()
+function p1:update()
     local s = self
-    log(s.dy)
 
     --directions
-    local up = btn(BTN_UP)
-    local down = btn(BTN_DOWN)
-    local left = btn(BTN_LEFT)
-    local right = btn(BTN_RIGHT)
+    local up = btn(BTN.UP)
+    local down = btn(BTN.DOWN)
+    local left = btn(BTN.LEFT)
+    local right = btn(BTN.RIGHT)
 
     s.dy += s.g --gravity
     s.dx *= s.f --friction
    
     --input
     if up then 
-        s.dy -= p.acc 
+        s.dy -= s.acc 
         s.spr = SPR_UP
     end
 
     if down then 
-        p.dy += p.acc
+        s.dy += s.acc
         s.spr = SPR_DWN
     end
 
@@ -68,7 +67,7 @@ function p:update()
 
     --clamp movement speed
     s.dx = mid(-s.max_dx, s.dx, s.max_dx)
-    if btn(BTN_DOWN) then
+    if down then
         s.dy = mid(-s.max_dy, s.dy, s.max_dy)
     else
         s.dy = mid(-s.max_dy, s.dy, s.max_dy - 0.5) --adjusts the falling speed
@@ -91,7 +90,7 @@ function p:update()
     if s.x < 0  then s.x = 0 end
 end
 
-function p:draw()
+function p1:draw()
     --flip x sprite for left and right directions 
     local flip = self.dx < 0
 
