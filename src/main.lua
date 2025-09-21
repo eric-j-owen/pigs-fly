@@ -1,13 +1,17 @@
 function _init()
-    log('init')
+    testfx = PartFx:new({amt=10})
+    testfx:add_p({r=4, y=rnd(100)})
+
 end
 
 function _update60()
-    p:update()
+    game_update()
+    testfx:update() 
 end
 
 function _draw()
-    cls(0)
-    cprnt('pigs fly', 0)
-    p:draw()
+    game_draw()
+
+    testfx:draw()
+
 end
