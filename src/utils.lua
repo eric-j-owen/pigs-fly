@@ -1,6 +1,6 @@
 function log(txt, clear)
     if clear == nil then clear = false end
-    printh(txt, "pf/logs/log", clear)
+    printh(txt, "/logs/log", clear)
 end
 
 --center print
