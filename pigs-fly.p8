@@ -10,7 +10,7 @@ __lua__
 #include src/characters/enemy.lua
 #include src/effects/particle.lua
 #include src/effects/partfx.lua
-#include src/effects/firefx.lua
+#include src/effects/fx.lua
 
 
 __gfx__

@@ -11,6 +11,7 @@ end
 
 local function update_main() 
     p1:update()
+    Fx:update()
 
 end
 
@@ -18,7 +19,9 @@ local function draw_main()
     cls(0)
     cprnt('pigs fly', 0)
 
+    Fx:draw()
     p1:draw()
+
 end
 
 function game_update() 

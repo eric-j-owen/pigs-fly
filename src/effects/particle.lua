@@ -11,6 +11,7 @@ Particle = {
     grav   = false,  --gravity
     grow   = false,  --particle size grows
     shrink = false,  --particle size shrinks
+    fade   = false,  --set opacity based on t/die
 }
 
 function Particle:new(o)
@@ -29,8 +30,11 @@ function Particle:update()
     if     s.t/s.die < 1/#s.c_tbl then s.c = s.c_tbl[1] 
     elseif s.t/s.die < 2/#s.c_tbl then s.c = s.c_tbl[2]
     elseif s.t/s.die < 3/#s.c_tbl then s.c = s.c_tbl[3]
-    else   s.c = s.c_tbl[4]
+    elseif s.t/s.die < 4/#s.c_tbl then s.c = s.c_tbl[4]
+    else   s.c = s.c_tbl[5]
     end
+
+    
     
     --physics
     if s.grav then s.dy += .5 end

@@ -23,10 +23,6 @@ function PartEffect:update()
 
         if p.t > p.die then del(self.parts, p) end
 
-        --spread particles at end of life cycle
-        if p.t > p.die * .25 then 
-            p.x += rnd(2)-1
-        end
     end
 end
 
