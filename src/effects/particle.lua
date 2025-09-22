@@ -23,7 +23,7 @@ function Particle:update()
     --physics
     if s.grav then s.dy += .5 end
     if s.grow then s.r += .1 end
-    if s.shrink then s.r -= .06 end
+    if s.shrink then s.r -= .1 end
 
     --move
     s.x += s.dx

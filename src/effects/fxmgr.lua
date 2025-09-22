@@ -1,48 +1,51 @@
-fx_sys = {
+fx_mgr = {
     parts = {},
     fx = {
         jet_thrust = {
-            amt     =10, 
-            sprd    =3,
+            amt     = 5, 
+            sprd    = 2,
             c       = 7,
             c_tbl   = {7,10,9,8,5},
             dy      = .5,
             grow    = true,
+            init = function(p)
+                p.dx = rnd(.5)-.25
+                p.die = 10+rnd(20)
+            end,
         },
 
         jet_idle = {
             amt     = 1, 
             sprd    = 1,
-            c       = 7,
-            c_tbl   = {7,6,5,5},
+            c       = 5,
+            c_tbl   = {5,5,5},
             dy      = -.35,
+            r       = 2,
+            shrink  = true,
+
+            init = function(p)
+                p.dx = (rnd(4)-2) * .05
+                p.dy = (rnd(4)-2) * .05
+                p.die = rnd(30) + 30
+            end
         },
     }
 }
 
 
-function fx_sys.spawn(name,args)
-    local eff = fx_sys.fx[name]
-    if not eff then return end
-
-    --include any args passed into object
+function fx_mgr:spawn(name,args)
+    local f = self.fx[name]
+    if not f then return end
+    
+    --include any args passed into spawn function
     local a = {}
-    for k,v in pairs(eff) do a[k] = v end
+    for k,v in pairs(f) do
+        if k ~= "init" then a[k] = v end
+    end
     for k,v in pairs(args) do a[k] = v end
     
     --create particles
     for i=1,a.amt do
-        if name == "jet_thrust" then
-            a.dx = rnd(.5)-.25
-            a.die = 5+rnd(20)
-        end
-
-        if name == "jet_idle" then
-            a.dx = (rnd(4)-2) * .08
-            a.die = rnd(30) + 10
-        end
-        
-
         local p = Particle:new({
             x      = a.x + rnd(a.sprd) - a.sprd / 2,
             y      = a.y + rnd(a.sprd) - a.sprd / 2,
@@ -58,22 +61,25 @@ function fx_sys.spawn(name,args)
             shrink = a.shrink or false,  
         })
         
-        add(fx_sys.parts, p )
+        --calls init for dynamic variables that need to be reinitialized every iteration
+        if f.init then f.init(p) end
+        
+        add(fx_mgr.parts, p )
     end
 end
 
 
-function fx_sys.update()
-    for p in all(fx_sys.parts) do
+function fx_mgr:update()
+    for p in all(self.parts) do
         p:update()
         if p.t > p.die then
-            del(fx_sys.parts, p)
+            del(self.parts, p)
         end
     end
 end
 
-function fx_sys.draw()
-   for p in all(fx_sys.parts) do
+function fx_mgr:draw()
+   for p in all(self.parts) do
         p:draw()
    end
 end

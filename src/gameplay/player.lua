@@ -71,15 +71,15 @@ function p1:update()
     if s.dy > 0 then dir_y *= -1 end
     
     if isFalling or s.y == bounds.btm then
-        fx_sys.spawn("jet_idle", {x = s.x+4, y = s.y+4})
+        fx_mgr:spawn("jet_idle", {x = s.x+3, y = s.y+4})
     elseif left and not isFalling then
-        fx_sys.spawn("jet_thrust", {x = s.x + off_x, y = s.y + off_y, dy = dir_y})
+        fx_mgr:spawn("jet_thrust", {x = s.x + off_x, y = s.y + off_y, dy = dir_y})
     elseif right then
-        fx_sys.spawn("jet_thrust", {x = s.x, y = s.y + off_y, dy = dir_y})
+        fx_mgr:spawn("jet_thrust", {x = s.x, y = s.y + off_y, dy = dir_y})
     elseif up then
-        fx_sys.spawn("jet_thrust", {x = s.x + 3.5, y = s.y + 10, dy = dir_y})
+        fx_mgr:spawn("jet_thrust", {x = s.x + 3.5, y = s.y + 10, dy = dir_y})
     elseif down then
-        fx_sys.spawn("jet_thrust", {x = s.x + 3.5, y = s.y - 4, dy = dir_y})
+        fx_mgr:spawn("jet_thrust", {x = s.x + 3.5, y = s.y - 4, dy = dir_y})
     end
     
     

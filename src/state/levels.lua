@@ -1,11 +1,11 @@
-levels = {
-    --map data
-    --enemy data
-    --win condition
-    --transition
+level_mgr = {
+    levels = {},
+    curr_lvl = 1,
+    nxt_lvl = function(self) self.curr_lvl += 1 end,
 }
 
-levels[1] = {
+
+level_mgr.levels[1] = {
     frnt_x = 0, --front layer x position
     sky_x = 0,  -- sky layer x posistion
     back_x = 0,  -- back layer x posistion
@@ -43,5 +43,11 @@ levels[1] = {
 
 }
 
-levels[2] = {}
-levels[3] = {}
+level_mgr.levels[2] = {
+    frnt_x = 0,
+    mid_x = 0,
+    back_x = 0,
+    update = function(self) end,
+    draw = function(self) end,
+}
+level_mgr.levels[3] = {}
