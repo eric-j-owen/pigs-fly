@@ -10,7 +10,7 @@ fx_mgr = {
             grow    = true,
             init = function(p)
                 p.dx = rnd(.5)-.25
-                p.die = 10+rnd(20)
+                p.die = 10+rnd(15)
             end,
         },
 
@@ -33,13 +33,13 @@ fx_mgr = {
 }
 
 
-function fx_mgr:spawn(name,args)
-    local f = self.fx[name]
-    if not f then return end
+function fx_mgr:spawn(type,args)
+    local t = self.fx[type]
+    if not t then return end
     
     --include any args passed into spawn function
     local a = {}
-    for k,v in pairs(f) do
+    for k,v in pairs(t) do
         if k ~= "init" then a[k] = v end
     end
     for k,v in pairs(args) do a[k] = v end
@@ -62,7 +62,7 @@ function fx_mgr:spawn(name,args)
         })
         
         --calls init for dynamic variables that need to be reinitialized every iteration
-        if f.init then f.init(p) end
+        if t.init then t.init(p) end
         
         add(fx_mgr.parts, p )
     end

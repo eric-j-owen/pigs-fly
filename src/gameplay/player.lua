@@ -11,9 +11,13 @@ p1 = Entity:new({
     x      = 64,
     y      = 64,
     spr    = nil,
-    acc    = 1,
+    h      = 8,
+    w      = 8,
     max_dx = .75,
     max_dy = .75,
+    g      = 0.03, --gravity
+    f      = 0.85,  --friction
+    acc    = 1,    --acceleration
 })
 
 function p1:update()
@@ -27,6 +31,13 @@ function p1:update()
         right = 120
     }
 
+    --shooting 
+    
+    if btn(BTN.O) then
+        bullet_mgr:shoot('basic', {x=s.x, y=s.y})
+    end
+
+    
     --directions
     local up = btn(BTN.UP)
     local down = btn(BTN.DOWN)

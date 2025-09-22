@@ -7,6 +7,7 @@ end
 
 local function main_update() 
     level_mgr.levels[curr_lvl]:update()
+    bullet_mgr:update()
     fx_mgr:update()
     p1:update()
 end
@@ -15,6 +16,7 @@ local function main_draw()
     cls(0)
 
     level_mgr.levels[curr_lvl]:draw()
+    bullet_mgr:draw()
     fx_mgr:draw()
     p1:draw()
     
