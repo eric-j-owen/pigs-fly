@@ -1,6 +1,6 @@
 local curr_state = nil
 local lvl_data = nil
-local curr_lvl = nil
+local curr_lvl = 1
 
 
 
@@ -8,13 +8,17 @@ local function main_init()
 end
 
 local function main_update() 
+
+    levels[1]:update()
+    fx_sys.update()
     p1:update()
-    fx_sys:update()
 end
 
 local function main_draw() 
     cls(0)
-    fx_sys:draw()
+    levels[1]:draw()
+
+    fx_sys.draw()
     p1:draw()
     
     rectfill(0,0,127,9,0)

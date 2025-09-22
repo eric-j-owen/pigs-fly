@@ -20,7 +20,7 @@ function p1:update()
     local s = self
 
     --boundries
-    map = {
+    bounds = {
         btm = 105,
         top = 10,
         left = 0,
@@ -33,7 +33,7 @@ function p1:update()
     local left = btn(BTN.LEFT)
     local right = btn(BTN.RIGHT)
     
-    local isFalling = s.dy > 0 and not down and s.y < map.btm
+    local isFalling = s.dy > 0 and not down and s.y < bounds.btm
 
     s.dy += s.g --gravity
     s.dx *= s.f --friction
@@ -70,7 +70,7 @@ function p1:update()
     local dir_y = .5
     if s.dy > 0 then dir_y *= -1 end
     
-    if isFalling or s.y == map.btm then
+    if isFalling or s.y == bounds.btm then
         fx_sys.spawn("jet_idle", {x = s.x+4, y = s.y+4})
     elseif left and not isFalling then
         fx_sys.spawn("jet_thrust", {x = s.x + off_x, y = s.y + off_y, dy = dir_y})
@@ -93,7 +93,7 @@ function p1:update()
     end
 
     -- falling sprite
-    if isFalling or s.y >= map.btm then
+    if isFalling or s.y >= bounds.btm then
         s.spr = SPR_FALL
     end
 
@@ -112,10 +112,10 @@ function p1:update()
     s.y += s.dy
 
     --screen collisions
-    if s.y > map.btm then s.y = map.btm s.dy = 0 end
-    if s.y < map.top then s.y = map.top end
-    if s.x > map.right then s.x = map.right end
-    if s.x < map.left  then s.x = map.left end
+    if s.y > bounds.btm then s.y = bounds.btm s.dy = 0 end
+    if s.y < bounds.top then s.y = bounds.top end
+    if s.x > bounds.right then s.x = bounds.right end
+    if s.x < bounds.left  then s.x = bounds.left end
 end
 
 function p1:draw()
