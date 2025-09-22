@@ -1,7 +1,6 @@
 function _init()
     log('clear', true)
-
-    Fx:init()
+    set_state(GAME.MAIN)
 end
 
 function _update60()

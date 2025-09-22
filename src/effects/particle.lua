@@ -1,17 +1,4 @@
-Particle = {
-    x      = 64,
-    y      = 64,
-    r      = 1,      --radius
-    c      = 7,      --color
-    c_tbl  = {},     --list of colors
-    t      = 0,      --frame counter
-    die    = 60,     --life limit in frames
-    dx     = 0,      --change in x
-    dy     = 0,      --change in y
-    grav   = false,  --gravity
-    grow   = false,  --particle size grows
-    shrink = false,  --particle size shrinks
-}
+Particle = {}
 
 function Particle:new(o)
     o = o or {}
@@ -33,8 +20,6 @@ function Particle:update()
     else   s.c = s.c_tbl[5]
     end
 
-    
-    
     --physics
     if s.grav then s.dy += .5 end
     if s.grow then s.r += .1 end
