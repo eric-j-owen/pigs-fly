@@ -11,8 +11,9 @@ BTN = {
 
 --game state\
 GAME = {
-    MENU  = 1,
-    MAIN  = 2,
-    WIN   = 3,
-    OVER  = 4,
+    START      = 1,
+    MAIN       = 2,
+    WIN        = 3,
+    OVER       = 4,
+    TRANSITION = 5,
 }

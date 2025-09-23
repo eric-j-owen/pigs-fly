@@ -8,16 +8,19 @@ local SPR_DWN_TURN = 6
 
 
 p1 = Entity:new({
-    x      = 64,
-    y      = 64,
-    spr    = nil,
-    h      = 8,
-    w      = 8,
-    max_dx = .75,
-    max_dy = .75,
-    g      = 0.03, --gravity
-    f      = 0.85,  --friction
-    acc    = 1,    --acceleration
+    x        = 64,
+    y        = 64,
+    spr      = nil,
+    h        = 8,
+    w        = 8,
+    max_dx   = 0.75,
+    max_dy   = 0.75,
+    g        = 0.03,  --gravity
+    f        = 0.85,  --friction
+    acc      = 1,     --acceleration
+    hp       = 3,     --hit points
+    cooldown = 0,     -- timer 
+    fire_r   = 15     --fire rate, frames between shots
 })
 
 function p1:update()
@@ -33,9 +36,13 @@ function p1:update()
 
     --shooting 
     
-    if btn(BTN.X) then
+    if btn(BTN.X) and self.cooldown <= 0 then
         bullet_mgr:shoot('basic', {x=s.x, y=s.y})
+        s.cooldown = s.fire_r
+    else
+        s.cooldown -= 1 
     end
+
 
     
     --directions
@@ -135,3 +142,4 @@ function p1:draw()
 
     spr(self.spr, self.x, self.y, 1, 1, invert)
 end
+

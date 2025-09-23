@@ -1,5 +1,5 @@
 bullet_mgr = {
-    cooldown = 0,
+    -- cooldown = 0,
     bullets = {},
     types = {
         basic = { 
@@ -7,8 +7,6 @@ bullet_mgr = {
             dx  = 3,
             w   = 1,
             h   = 1,
-            f_r  = 15, --fire rate- frames between shots
-
         }
     }
 }
@@ -35,29 +33,22 @@ function Bullet:draw()
 end
 
 function bullet_mgr:shoot(type, args)
-    local t = self.types[type]
-    if not t then return end
-
-    if self.cooldown > 0 then return end
-
-    --create new bullet
-    local b = Bullet:new({
-        x = args.x,
-        y = args.y,
-        dx = args.dx or t.dx,
-        dy = args.dy or t.dy,
-        w = t.w,
-        h = t.h,
-        dmg = t.dmg
+    local b = self.types[type]
+    --create new bullet 
+    local new_b = Bullet:new({
+        x   = args.x,
+        y   = args.y,
+        dx  = args.dx or b.dx,
+        dy  = args.dy or b.dy,
+        w   = b.w,
+        h   = b.h,
+        dmg = b.dmg,
     })
-    add(self.bullets, b)
+    add(self.bullets, new_b)
 
-    --reset cooldown
-    self.cooldown = t.f_r
 end
 
 function bullet_mgr:update()
-    if self.cooldown > 0 then self.cooldown -= 1 end
     for b in all(self.bullets) do
         b:update()
     end

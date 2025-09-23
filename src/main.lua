@@ -1,7 +1,6 @@
 function _init()
     log('clear', true)
-    set_state(GAME.MAIN)
-    -- music(0,0,3)
+    set_state(GAME.START)
 end
 
 function _update60()
