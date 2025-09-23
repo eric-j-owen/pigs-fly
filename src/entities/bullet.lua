@@ -63,7 +63,6 @@ function bullet_mgr:update()
     end
 end
 
-
 function bullet_mgr:draw()
     for b in all(self.bullets) do
         b:draw()

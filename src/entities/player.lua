@@ -33,7 +33,7 @@ function p1:update()
 
     --shooting 
     
-    if btn(BTN.O) then
+    if btn(BTN.X) then
         bullet_mgr:shoot('basic', {x=s.x, y=s.y})
     end
 

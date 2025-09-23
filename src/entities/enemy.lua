@@ -5,3 +5,4 @@ function Enemy:new(o)
     setmetatable(o, { __index = self })
     return o
 end
+

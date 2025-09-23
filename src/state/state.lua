@@ -1,6 +1,3 @@
-
-
-
 local function main_init()
     curr_lvl = level_mgr.curr_lvl
 end
@@ -23,8 +20,6 @@ local function main_draw()
     rectfill(0,0,127,9,0)
     cprnt('pigs fly', 0)
 end
-
-
 
 function get_state()
     return curr_state

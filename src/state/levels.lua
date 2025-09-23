@@ -4,7 +4,6 @@ level_mgr = {
     nxt_lvl = function(self) self.curr_lvl += 1 end,
 }
 
-
 level_mgr.levels[1] = {
     frnt_x = 0, --front layer x position
     sky_x = 0,  -- sky layer x posistion
