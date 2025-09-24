@@ -3,16 +3,18 @@ enemy_mgr = {
 
     types = {
         chicken = {
-            hp       = 1,
+            type     = 'enemy',
+            hp       = 3,
             beg_spr  = 44,
             end_spr  = 47,
+            h        = 8,
+            w        = 8,
             g        = 0.03,
             dy       = 0,
             dx       = 0.5,
             cooldown = 0,      
             fire_r   = 15,
-            ani_t    = 0,
-            ani_spd  = 10,
+            ani_spd  = .15,
             update = function(self) 
                 self.dy += self.g
                 
@@ -24,13 +26,11 @@ enemy_mgr = {
                     self.dy = mid(0,self.dy, .4)
                 end
 
-                --if in air and player is near enemy, shoot
-                if self.dy < 0 and p1.x >= self.x - 4 and p1.x <= self.x + 8 then
+                --shoot if in air at a certain threshold
+                if self.dy < 0 and self.y < 40 then
                     if self.cooldown <= 0 then
-                        bullet_mgr:shoot('basic', { x = self.x, y = self.y, dx = 0, dy = 1})
-                        self.cooldown = self.fire_r
-                    else
-                        self.cooldown -= 1
+                        bullet_mgr:shoot('egg', { x = self.x+2, y = self.y, dx = 0, dy = 1})
+                        self.cooldown = 1 --limits 1 shot per enemy
                     end
                 end
 
@@ -39,12 +39,11 @@ enemy_mgr = {
                 if self.y > 105 then
                     self.y = 105
                     self.dy = 0
-                    self.ani_spd = 10
 
-                    --jump logic
+                    --jump logic, dont jump if player stays at ground level, jump near player
                     if self.y - p1.y > 6 and self.x <= p1.x + 30 then
                         self.dy = -2
-                        self.ani_spd = 3                       
+                        self.ani_spd = .5                    
                     end 
                 end 
 
@@ -74,6 +73,8 @@ function enemy_mgr:spawn(type, args)
     local new_e = Enemy:new({
         x       = args.x,
         y       = args.y,
+        h       = e.h,
+        w       = e.w,
         hp      = e.hp,
         spr     = e.beg_spr,
         beg_spr = e.beg_spr,
@@ -95,23 +96,30 @@ function enemy_mgr:update()
     for e in all(self.enemies) do
         e:update()
 
-        --animate sprites
-        e.ani_t += 1
-        if e.ani_t % e.ani_spd == 0 then
-            e.spr += 1
-            if e.spr > e.end_spr then
-                e.spr = e.beg_spr
-            end
+      
+        --animations
+        e.spr += e.ani_spd
+        if e.spr >= e.end_spr + 1 then e.spr = e.beg_spr end
+
+        --collisions
+        if coll(e, p1) then
+            p1:take_dmg(1)
         end
 
+        --cleanup
         if e.x < -10 or e.x > 130 or e.y < -10 or e.y > 130 then
             del(self.enemies, e)
         end
+
+        --death
+        if e.hp <= 0 then del(self.enemies, e) end
+
     end
 end
 
 function enemy_mgr:draw()
     for e in all(self.enemies) do
+
         spr(e.spr, e.x, e.y)
     end
 end

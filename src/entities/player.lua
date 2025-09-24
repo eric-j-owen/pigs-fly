@@ -8,6 +8,7 @@ local SPR_DWN_TURN = 6
 
 
 p1 = Entity:new({
+    type     = 'player',
     x        = 64,
     y        = 64,
     spr      = nil,
@@ -18,9 +19,11 @@ p1 = Entity:new({
     g        = 0.03,  --gravity
     f        = 0.85,  --friction
     acc      = 1,     --acceleration
-    hp       = 3,     --hit points
+    hp       = 6,     --hit points
     cooldown = 0,     -- timer 
-    fire_r   = 15     --fire rate, frames between shots
+    fire_r   = 15,    --fire rate, frames between shots
+    god_t    = 0,     --invulnerability timer
+    flash_t  =0,      --flash sprite
 })
 
 function p1:update()
@@ -31,10 +34,18 @@ function p1:update()
 
     --shooting 
     if btn(BTN.X) and self.cooldown <= 0 then
-        bullet_mgr:shoot('basic', {x=s.x, y=s.y})
+        bullet_mgr:shoot('player', {x=s.x, y=s.y})
         s.cooldown = s.fire_r
     else
         s.cooldown -= 1 
+    end
+
+    --taking dmg
+    if s.god_t > 0 then
+        s.god_t -= 1
+        s.flash_t += 1
+    else
+        s.flash_t = 0
     end
 
     --directions
@@ -132,6 +143,11 @@ function p1:draw()
     --flip x sprite for left and right directions 
     local invert = self.dx < 0
 
+    --flash effect
+    --every 3 frames skips 3 frames, remainder loops 0 to 6
+    if self.god_t > 0 and (self.flash_t % 6 < 3) then
+        return --skip drawing sprite
+    end
     spr(self.spr, self.x, self.y, 1, 1, invert)
 end
 

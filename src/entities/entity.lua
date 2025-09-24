@@ -20,3 +20,12 @@ function Entity:new(o)
     setmetatable(o, { __index = self })
     return o
 end
+
+
+function Entity:take_dmg(dmg)
+    if self.type == 'player' then
+        if self.god_t > 0 then return end
+        self.god_t = 120
+    end
+    self.hp -= dmg
+end
