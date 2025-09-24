@@ -6,6 +6,12 @@ Entity = {
     h      = 0,    --height
     dx     = 0,    --change in x
     dy     = 0,    --change in y
+
+    --animation
+    beg_spr  = 0,
+    end_spr  = 0,
+    ani_t    = 0,  --animation timer
+    ani_spd  = 1,  
 }
 
 --constructor

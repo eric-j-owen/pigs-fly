@@ -10,4 +10,5 @@ end
 
 function _draw()
     game_draw()
+    
 end

@@ -1,4 +1,4 @@
-local function main_init() end
+local curr_state = GAME.START
 
 local function main_update()
     level_mgr.levels[level_mgr.curr_lvl]:update()
@@ -9,19 +9,14 @@ local function main_update()
 end
 
 local function main_draw()
-    
     level_mgr.levels[level_mgr.curr_lvl]:draw()
     bullet_mgr:draw()
     enemy_mgr:draw()
     fx_mgr:draw()
     p1:draw()
- 
-    --ui
-    rectfill(0,0,127,9,0)
-    cprnt('pigs fly', 0)
 end
 
-local transition_t = 300
+local transition_t = 30
 local function transition_update()
     transition_t -= 1
 
@@ -31,7 +26,7 @@ local function transition_update()
 end
 
 local function transition_draw()
-    cprnt("Beginning level "..level_mgr.curr_lvl, 54)
+    cprnt("beginning level "..level_mgr.curr_lvl, 54)
     cprnt(transition_t)
 end
 
@@ -42,22 +37,40 @@ function get_state()
 end
 
 function set_state(new_state)
-    transition_t = 300
+    --reset state transition timer
+    transition_t = 30
+
+   
+    
+    log("changing state from "..curr_state.." to "..new_state)
     curr_state = new_state
+
+     --game music
+    local s = get_state()
+    if s == GAME.START then
+    elseif s == GAME.MAIN then
+    elseif s == GAME.TRANSITION then
+    elseif s == GAME.OVER then music(0,0,3)
+    elseif s == GAME.WIN then
+    end 
 end
 
 function game_update() 
-    if curr_state == GAME.START then
-        if btn(BTN.X) then 
-            set_state(GAME.TRANSITION) 
+    local s = get_state()
+    if s == GAME.START then
+        if btnp(BTN.X) then 
+            set_state(GAME.MAIN) 
         end
-    elseif curr_state == GAME.MAIN then
+    elseif s == GAME.MAIN then
         main_update()
-    elseif curr_state == GAME.TRANSITION then
+    elseif s == GAME.TRANSITION then
         transition_update()
-    elseif curr_state == GAME.OVER then
-    
-    elseif curr_state == GAME.WIN then
+    elseif s == GAME.OVER then
+        p1:update()
+        if btnp(BTN.X) then 
+            set_state(GAME.MAIN) 
+        end
+    elseif s == GAME.WIN then
     
     end 
 end
@@ -65,16 +78,19 @@ end
 function game_draw() 
     cls(0)
 
-    if curr_state == GAME.START then
-        cprnt("PIGS FLY", 50)
+    local s = get_state()
+    if s == GAME.START then
+        cprnt("pigs fly", 50)
         cprnt("PRESS x TO START", 70)
-    elseif curr_state == GAME.MAIN then
+    elseif s == GAME.MAIN then
         main_draw()
-    elseif curr_state == GAME.TRANSITION then
+    elseif s == GAME.TRANSITION then
         transition_draw()
-    elseif curr_state == GAME.OVER then
-    
-    elseif curr_state == GAME.WIN then
+    elseif s == GAME.OVER then
+        cprnt('game over', 50)
+        cprnt("PRESS x TO TRY AGAIN", 70)
+        p1:draw()
+    elseif s == GAME.WIN then
     
     end 
 end
