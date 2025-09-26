@@ -3,7 +3,6 @@ enemy_mgr = {
 
     types = {
         chicken = {
-            type     = 'enemy',
             hp       = 3,
             beg_spr  = 44,
             end_spr  = 47,
@@ -15,7 +14,10 @@ enemy_mgr = {
             cooldown = 0,      
             fire_r   = 15,
             ani_spd  = .15,
-            update = function(self) 
+            update = function(self)
+                bnds = level_mgr.levels[level_mgr.curr_lvl].bounds
+
+
                 self.dy += self.g
                 
                 self.x -= self.dx
@@ -30,14 +32,16 @@ enemy_mgr = {
                 if self.dy < 0 and self.y < 40 then
                     if self.cooldown <= 0 then
                         bullet_mgr:shoot('egg', { x = self.x+2, y = self.y, dx = 0, dy = 1})
-                        self.cooldown = 1 --limits 1 shot per enemy
+                        self.cooldown = 10 --limits 1 shot per enemy
+                    else
+                        self.cooldown -=1
                     end
                 end
 
                  
                  --collision ground 
-                if self.y > 105 then
-                    self.y = 105
+                if self.y > bnds.btm then
+                    self.y = bnds.btm
                     self.dy = 0
 
                     --jump logic, dont jump if player stays at ground level, jump near player
@@ -71,6 +75,8 @@ function enemy_mgr:spawn(type, args)
     local e = self.types[type]
 
     local new_e = Enemy:new({
+        container = self.enemies,
+        type = 'enemy',
         x       = args.x,
         y       = args.y,
         h       = e.h,
@@ -112,14 +118,29 @@ function enemy_mgr:update()
         end
 
         --death
-        if e.hp <= 0 then del(self.enemies, e) end
+        if e.hp <= 0 then 
+            e:die()
+        end
+
+        --flashing when taking dmg
+        if e.flash then
+            e.flash -= 1
+            if e.flash < 0 then
+                e.flash = nil
+            end
+        end
 
     end
 end
 
 function enemy_mgr:draw()
     for e in all(self.enemies) do
-
-        spr(e.spr, e.x, e.y)
+        if e.flash then
+            for i=0,15 do pal(i, 7) end
+            spr(e.spr,e.x,e.y)
+            pal()
+        else
+            spr(e.spr, e.x, e.y)
+        end
     end
 end

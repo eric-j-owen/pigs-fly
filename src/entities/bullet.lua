@@ -57,6 +57,7 @@ function bullet_mgr:shoot(type, args)
     local b = self.types[type]
     --create new bullet 
     local new_b = Bullet:new({
+        container = self.bullets,
         x      = args.x,
         y      = args.y,
         dx     = args.dx or b.dx,
@@ -82,24 +83,21 @@ function bullet_mgr:update()
             if b.spr == 7 then --player bullet sprite
                 for e in all(enemy_mgr.enemies) do
                     if coll(b, e) then
+                        b:die()
                         e:take_dmg(b.dmg)
-                        del(self.bullets, b)
                     end
                 end
             else --if not player, assume bullet is enemy's   
                 if coll(b,p1) then
-                    del(self.bullets, b)
+                    b:die()
                     p1:take_dmg(b.dmg)
                 end
             end
         end
-
-        
     end
 end
 
 function bullet_mgr:draw()
-    cprnt(p1.hp)
     for b in all(self.bullets) do
         b:draw()
     end

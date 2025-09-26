@@ -16,7 +16,15 @@ local function main_draw()
     p1:draw()
 end
 
-local transition_t = 30
+local function reset_game() 
+    p1 = Player:init()
+
+    enemy_mgr.enemies = {}
+    bullet_mgr.bullets = {}
+    fx_mgr.effects = {}
+
+end
+
 local function transition_update()
     transition_t -= 1
 
@@ -38,19 +46,23 @@ end
 
 function set_state(new_state)
     --reset state transition timer
-    transition_t = 30
+    transition_t = 120
 
+    --fade music
+    music(-1, 1000) 
    
     
     log("changing state from "..curr_state.." to "..new_state)
     curr_state = new_state
 
-     --game music
+    
     local s = get_state()
-    if s == GAME.START then
-    elseif s == GAME.MAIN then
+    if s == GAME.START then 
+    elseif s == GAME.MAIN then 
+        reset_game()
     elseif s == GAME.TRANSITION then
-    elseif s == GAME.OVER then music(0,0,3)
+    elseif s == GAME.OVER then 
+        music(0,0,3)
     elseif s == GAME.WIN then
     end 
 end
@@ -59,7 +71,7 @@ function game_update()
     local s = get_state()
     if s == GAME.START then
         if btnp(BTN.X) then 
-            set_state(GAME.MAIN) 
+            set_state(GAME.TRANSITION) 
         end
     elseif s == GAME.MAIN then
         main_update()
@@ -68,7 +80,7 @@ function game_update()
     elseif s == GAME.OVER then
         p1:update()
         if btnp(BTN.X) then 
-            set_state(GAME.MAIN) 
+            set_state(GAME.TRANSITION) 
         end
     elseif s == GAME.WIN then
     

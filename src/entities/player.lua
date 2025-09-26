@@ -7,30 +7,38 @@ local SPR_FALL = 5
 local SPR_DWN_TURN = 6
 
 
-p1 = Entity:new({
-    type     = 'player',
-    x        = 64,
-    y        = 64,
-    spr      = nil,
-    h        = 8,
-    w        = 8,
-    max_dx   = 0.75,
-    max_dy   = 0.75,
-    g        = 0.03,  --gravity
-    f        = 0.85,  --friction
-    acc      = 1,     --acceleration
-    hp       = 6,     --hit points
-    cooldown = 0,     -- timer 
-    fire_r   = 15,    --fire rate, frames between shots
-    god_t    = 0,     --invulnerability timer
-    flash_t  =0,      --flash sprite
-})
+Player = Entity:new()
 
-function p1:update()
+
+function Player:init() 
+    
+   return Player:new({
+        type     = 'player',
+        x        = 64,
+        y        = 64,
+        spr      = SPR_IDL,
+        h        = 8,
+        w        = 8,
+        max_dx   = 0.75,
+        max_dy   = 0.75,
+        g        = 0.03,  --gravity
+        f        = 0.85,  --friction
+        acc      = 1,     --acceleration
+        hp       = 4,     --hit points
+        cooldown = 0,     -- timer 
+        fire_r   = 15,    --fire rate, frames between shots
+        god_t    = 0,     --invulnerability timer
+        flash_t  =0,      --flash sprite
+    })
+end
+
+function Player:update()
     local s = self
 
     --map boundries
-    bounds = level_mgr.levels[level_mgr.curr_lvl].bounds
+    bnds = level_mgr.levels[level_mgr.curr_lvl].bounds
+
+
 
     --shooting 
     if btn(BTN.X) and self.cooldown <= 0 then
@@ -54,11 +62,11 @@ function p1:update()
     local left = btn(BTN.LEFT)
     local right = btn(BTN.RIGHT)
     
-    local isFalling = s.dy > 0 and not down and s.y < bounds.btm
+    local isFalling = s.dy > 0 and not down and s.y < bnds.btm
 
     s.dy += s.g --gravity
     s.dx *= s.f --friction
-   
+
     --input
     if up then 
         s.dy -= s.acc 
@@ -91,7 +99,7 @@ function p1:update()
         local dir_y = .5
         if s.dy > 0 then dir_y *= -1 end
         
-        if isFalling or s.y == bounds.btm then
+        if isFalling or s.y == bnds.btm then
             fx_mgr:spawn("jet_idle", {x = s.x+3, y = s.y+4})
         elseif left and not isFalling then
             fx_mgr:spawn("jet_thrust", {x = s.x + off_x, y = s.y + off_y, dy = dir_y})
@@ -114,32 +122,32 @@ function p1:update()
     end
 
     -- falling sprite
-    if isFalling or s.y >= bounds.btm then
+    if isFalling or s.y >= bnds.btm then
         s.spr = SPR_FALL
     end
 
     --clamp movement speed
     s.dx = mid(-s.max_dx, s.dx, s.max_dx)            --general x axis speed clamp
-    if p1.dy<0 then 
+    if s.dy<0 then 
         s.dy = mid(-s.max_dy, s.dy, s.max_dy)        --general y axis speed clamp
     elseif isFalling then 
         s.dy = mid(-s.max_dy, s.dy, s.max_dy - 0.5)  --speed when floating down
     elseif down then                                 --speed when jet pack thrust down
-         s.dy = mid(-s.max_dy, s.dy, s.max_dy + .3)
+        s.dy = mid(-s.max_dy, s.dy, s.max_dy + .3)
     end
-   
+
     --apply movement to coordinates
     s.x += s.dx
     s.y += s.dy
 
     --screen collisions
-    if s.y > bounds.btm then s.y = bounds.btm s.dy = 0 end
-    if s.y < bounds.top then s.y = bounds.top end
-    if s.x > bounds.right then s.x = bounds.right end
-    if s.x < bounds.left  then s.x = bounds.left end
+    if s.y > bnds.btm then s.y = bnds.btm s.dy = 0 end
+    if s.y < bnds.top then s.y = bnds.top end
+    if s.x > bnds.right then s.x = bnds.right end
+    if s.x < bnds.left  then s.x = bnds.left end
 end
 
-function p1:draw()
+function Player:draw()
     --flip x sprite for left and right directions 
     local invert = self.dx < 0
 

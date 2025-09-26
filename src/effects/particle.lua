@@ -17,13 +17,14 @@ function Particle:update()
     elseif s.t/s.die < 2/#s.c_tbl then s.c = s.c_tbl[2]
     elseif s.t/s.die < 3/#s.c_tbl then s.c = s.c_tbl[3]
     elseif s.t/s.die < 4/#s.c_tbl then s.c = s.c_tbl[4]
-    else   s.c = s.c_tbl[5]
+    elseif s.t/s.die < 5/#s.c_tbl then s.c = s.c_tbl[5]
+    else   s.c = s.c_tbl[6]
     end
 
     --physics
-    if s.grav then s.dy += .5 end
+    if s.grav then s.dy += .05 end
     if s.grow then s.r += .1 end
-    if s.shrink then s.r -= .1 end
+    if s.shrink then s.r -= .5 end
 
     --move
     s.x += s.dx

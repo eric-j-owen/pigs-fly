@@ -4,20 +4,18 @@ fx_mgr = {
         jet_thrust = {
             amt     = 5, 
             sprd    = 2,
-            c       = 7,
-            c_tbl   = {7,10,9,8,5},
+            c_tbl   = {7,10,9,8,2,5},
             dy      = .5,
             grow    = true,
             init = function(p)
                 p.dx = rnd(.5)-.25
-                p.die = 10+rnd(15)
+                p.die = 5+rnd(10)
             end,
         },
 
         jet_idle = {
             amt     = 1, 
             sprd    = 1,
-            c       = 5,
             c_tbl   = {5,5,5},
             dy      = -.35,
             r       = 2,
@@ -26,9 +24,35 @@ fx_mgr = {
             init = function(p)
                 p.dx = (rnd(4)-2) * .05
                 p.dy = (rnd(4)-2) * .05
-                p.die = rnd(30) + 30
+                p.die = rnd(10) + 10
             end
         },
+
+        explode = {
+            amt   = 20,
+            sprd  = 8,
+            r     =10,
+            c_tbl = {7,10,9,8,2,5},
+            shrink  = true,
+            grav  = true,
+            init = function(p)
+                p.dx = rnd(2) -1
+                p.dy = rnd(2) - 2
+                p.die = rnd(50) + 15
+            end
+        },
+        hit_mark = {
+            amt = 1,
+            sprd = 1,
+            c_tbl = {6},
+            grav = true,
+            die = 60,
+            init = function(p)
+                p.dx = rnd(2) -1
+                p.dy = -1
+            end
+        },
+        muzz_flash = {},
     }
 }
 
@@ -50,10 +74,9 @@ function fx_mgr:spawn(type,args)
             x      = a.x + rnd(a.sprd) - a.sprd / 2,
             y      = a.y + rnd(a.sprd) - a.sprd / 2,
             r      = a.r or 1,       --radius
-            c      = a.c or 7,       --color
             c_tbl  = a.c_tbl or {},  --list of colors
             t      = 0,              --frame counter
-            die    = a.die or 0,
+            die    = a.die or 30,     --life span of particle 
             dx     = a.dx or 0,      
             dy     = a.dy or 0,      
             grav   = a.grav or false,  
@@ -79,6 +102,7 @@ function fx_mgr:update()
 end
 
 function fx_mgr:draw()
+    cprnt(#fx_mgr.parts)
    for p in all(self.parts) do
         p:draw()
    end
