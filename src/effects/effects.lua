@@ -102,7 +102,6 @@ function fx_mgr:update()
 end
 
 function fx_mgr:draw()
-    cprnt(#fx_mgr.parts)
    for p in all(self.parts) do
         p:draw()
    end

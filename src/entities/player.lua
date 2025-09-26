@@ -24,9 +24,9 @@ function Player:init()
         g        = 0.03,  --gravity
         f        = 0.85,  --friction
         acc      = 1,     --acceleration
-        hp       = 4,     --hit points
+        hp       = 10,     --hit points
         cooldown = 0,     -- timer 
-        fire_r   = 15,    --fire rate, frames between shots
+        fire_r   = 8,    --fire rate, frames between shots
         god_t    = 0,     --invulnerability timer
         flash_t  =0,      --flash sprite
     })

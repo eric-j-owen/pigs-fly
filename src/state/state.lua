@@ -1,3 +1,4 @@
+_f = 0 --global frame counter
 local curr_state = GAME.START
 
 local function main_update()
@@ -17,6 +18,7 @@ local function main_draw()
 end
 
 local function reset_game() 
+    _f = 0
     p1 = Player:init()
 
     enemy_mgr.enemies = {}

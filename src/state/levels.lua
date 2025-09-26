@@ -14,34 +14,30 @@ Level = {
     e_types      = {},     --array of enemy types
     lvl_dur      = 0,      --level duration
     spwn_tmr     = 5,      --timer to next spawn
-    frms         = 0,      --frame counter
     max_e        = 1,      --max enmies on screen, increases as level progresses
-    e_x          = 0,      --enemy spawns x , y 
-    e_y          = 0,
     update_lvl = function(self)
         local s = self
-        s.frms += 1 
         s.spwn_tmr -= 1
 
         if s.spwn_tmr <= 0 and #enemy_mgr.enemies < s.max_e then
             
             --select random enemy
             local rnd_i = flr(rnd(#s.e_types)) + 1
-            local e = s.e_types[rnd_i]
+            local e_type = s.e_types[rnd_i]   --string of enemy name
 
             --spawn faster as level progresses
-            enemy_mgr:spawn(e, {x=s.e_x, y=s.e_y})
+            enemy_mgr:spawn(e_type, {x=140})
             s.spwn_tmr = rnd(60)
             
         end
 
          --increment max enemies on screen every 5 seconds
-        if s.frms % 300 == 0 then
+        if _f % 300 == 0 then
             s.max_e += 1
         end
 
         --decrement duration every second
-        if s.frms % 60 == 0 then
+        if _f % 60 == 0 then
             s.lvl_dur -= 1
         end
 
@@ -71,9 +67,7 @@ end
 --level 1
 level_mgr.levels[1] = Level:new({
     bounds       = {top=10, right=120, btm=105, left=0},
-    e_types      = {"chicken"},
-    e_x          = 130,
-    e_y          = 105,
+    e_types      = {"chicken", "octopus"},
     lvl_dur      = 60,          
     --map
     frnt_x     = 0,--front layer x position

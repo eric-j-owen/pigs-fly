@@ -4,11 +4,10 @@ function _init()
 end
 
 function _update60()
+    _f += 1 --global frame counter
     game_update()
-
 end
 
 function _draw()
     game_draw()
-    
 end

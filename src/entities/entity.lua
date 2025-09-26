@@ -25,9 +25,7 @@ end
 
 
 function Entity:take_dmg(dmg)
-
-   
-    
+     
     if self.type == 'player' then
         if self.god_t > 0 then return end
         
@@ -41,6 +39,11 @@ function Entity:take_dmg(dmg)
         self.flash = 4 --enemy flashing when taking dmg
     end
 
+    --hops if taking dmg
+    if self.e_type == 'chicken' then
+        self.dy = -1
+    end
+
 
     self.hp -= dmg
     fx_mgr:spawn('hit_mark',{x=self.x,y=self.y})
@@ -50,5 +53,12 @@ function Entity:die()
     if self.type == 'enemy' then
         fx_mgr:spawn("explode", {x=self.x, y=self.y})
     end
-    del(self.container, self)
+    del(self.tbl, self)
+end
+
+function Entity:cleanup()
+    if self.x < -10 or self.x > 150 or self.y < -10 or self.y > 130 then
+        del(self.tbl, self)
+    end
+
 end

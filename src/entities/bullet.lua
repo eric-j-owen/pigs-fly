@@ -12,8 +12,8 @@ bullet_mgr = {
         egg = {
             dmg = 1,
             dx  = 3,
-            w   = 2,
-            h   = 2,
+            w   = 1,
+            h   = 1,
             spr = 19,
         }
     }
@@ -57,7 +57,7 @@ function bullet_mgr:shoot(type, args)
     local b = self.types[type]
     --create new bullet 
     local new_b = Bullet:new({
-        container = self.bullets,
+        tbl = self.bullets,
         x      = args.x,
         y      = args.y,
         dx     = args.dx or b.dx,
@@ -75,6 +75,7 @@ end
 
 function bullet_mgr:update()
     for b in all(self.bullets) do
+        b:cleanup()
         b:update()
 
 
