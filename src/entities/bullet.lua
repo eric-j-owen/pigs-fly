@@ -6,7 +6,7 @@ bullet_mgr = {
             spr = 7,
             dmg = 1,
             dx  = 3,
-            w   = 1,
+            w   = 8,
             h   = 1,
         },
         egg = {

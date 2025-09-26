@@ -1,10 +1,14 @@
 level_mgr = {
     levels = {},
     curr_lvl = 1,
-    
+    curr_stg = 1,
     nxt_lvl = function(self)
         set_state(GAME.TRANSITION)
-        self.curr_lvl += 1 
+        self.curr_stg += 1
+        if self.curr_stg > 2 then
+            self.curr_stg = 1
+            self.curr_lvl += 1
+        end 
     end,
 
 }
@@ -13,6 +17,7 @@ Level = {
     bounds       = {top=0,right=127,btm=127,left=0},--level boundries
     e_types      = {},     --array of enemy types
     lvl_dur      = 0,      --level duration
+    lvl_t        = 0,      --level timer
     spwn_tmr     = 5,      --timer to next spawn
     max_e        = 1,      --max enmies on screen, increases as level progresses
     update_lvl = function(self)
@@ -38,12 +43,14 @@ Level = {
 
         --decrement duration every second
         if _f % 60 == 0 then
-            s.lvl_dur -= 1
+            s.lvl_t += 1
         end
 
         --next level
-        if s.lvl_dur <= 0 then
+        if s.lvl_t >= s.lvl_dur then
             level_mgr:nxt_lvl()
+            s.lvl_t = 0
+            s.max_e = 1
         end
     end,
 
@@ -53,7 +60,7 @@ Level = {
         print("max e:      " .. self.max_e, 0,0,8)
         print("curr en:    "..#enemy_mgr.enemies, 0, 5, 7)
         print("spwn timer: " .. self.spwn_tmr, 0,10,9)
-        print("lvl timer:  " .. self.lvl_dur, 0,15,10)
+        print("lvl timer:  " ..self.lvl_t.."/".. self.lvl_dur, 0,15,10)
         --
     end,
 }
@@ -66,15 +73,19 @@ end
 
 --level 1
 level_mgr.levels[1] = Level:new({
-    bounds       = {top=10, right=120, btm=105, left=0},
-    e_types      = {"chicken", "octopus"},
-    lvl_dur      = 60,          
+    bounds     = {top=10, right=120, btm=105, left=0},
+    e_types    = {"chicken"},
+    lvl_dur    = 60,  
+    lvl_t      = 0,        
     --map
     frnt_x     = 0,--front layer x position
     sky_x      = 0,-- sky layer x posistion
     back_x     = 0,-- back layer x posistion
     
     update = function(self)
+        if level_mgr.curr_stg == 2 then
+            self.e_types = { "chicken","octopus"}
+        end
         --map
         self.back_x -= .5
         self.sky_x -= .25
@@ -85,6 +96,8 @@ level_mgr.levels[1] = Level:new({
         if self.frnt_x < -127 then self.frnt_x = 0 end
 
         self:update_lvl()
+
+        
         
     end,
 
@@ -111,7 +124,6 @@ level_mgr.levels[1] = Level:new({
 
 --level 2
 level_mgr.levels[2] = Level:new({
-
     update = function(self)
         self:update_lvl()
     end,

@@ -3,13 +3,15 @@ fx_mgr = {
     fx = {
         jet_thrust = {
             amt     = 5, 
-            sprd    = 2,
-            c_tbl   = {7,10,9,8,2,5},
+            sprd    = 1,
+            c_tbl   = {7,12,12,12,5},
             dy      = .5,
-            grow    = true,
+            shrink    = true,
+            rate   = .2,
+            r=2.5,
             init = function(p)
                 p.dx = rnd(.5)-.25
-                p.die = 5+rnd(10)
+                p.die = rnd(10)
             end,
         },
 
@@ -34,6 +36,7 @@ fx_mgr = {
             r     =10,
             c_tbl = {7,10,9,8,2,5},
             shrink  = true,
+            rate  = .5,
             grav  = true,
             init = function(p)
                 p.dx = rnd(2) -1
@@ -81,7 +84,8 @@ function fx_mgr:spawn(type,args)
             dy     = a.dy or 0,      
             grav   = a.grav or false,  
             grow   = a.grow or false,  
-            shrink = a.shrink or false,  
+            shrink = a.shrink or false, 
+            rate = a.rate or .1, 
         })
         
         --calls init for dynamic variables that need to be reinitialized every iteration

@@ -36,7 +36,7 @@ local function transition_update()
 end
 
 local function transition_draw()
-    cprnt("beginning level "..level_mgr.curr_lvl, 54)
+    cprnt("beginning stage "..level_mgr.curr_lvl.."-"..level_mgr.curr_stg, 54)
     cprnt(transition_t)
 end
 
