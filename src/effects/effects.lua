@@ -4,7 +4,7 @@ fx_mgr = {
         jet_thrust = {
             amt     = 5, 
             sprd    = 1,
-            c_tbl   = {7,10,10,10,5},
+            c_tbl   = {7,10,9,9,5},
             dy      = .5,
             shrink    = true,
             rate   = .2,
@@ -78,6 +78,7 @@ fx_mgr = {
             grow = true,
             fill = false,
         },
+        
         muzz_flash = {},
     }
 }

@@ -46,9 +46,8 @@ enemy_mgr = {
                     self.y = bnds.btm
                     self.dy = 0
 
-                    --jump logic, dont jump if player stays at ground level, jump near player
-                    if self.y - p1.y > 6 and self.x <= p1.x + 30 then
-                        self.dy = -2
+                    if rnd(1) < .01 then
+                        self.dy = -1 - rnd(1)
                         self.ani_spd = .5                    
                     end 
                 end 
@@ -141,6 +140,10 @@ function enemy_mgr:update()
         --collisions
         if coll(e, p1) then
             p1:take_dmg(1)
+
+            if p1.boost then
+                e:take_dmg(3)
+            end
         end
 
        

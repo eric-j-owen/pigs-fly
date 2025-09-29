@@ -27,7 +27,8 @@ Level = {
         
         enemy_mgr.enemies = {}
         bullet_mgr.bullets = {}
-        fx_mgr.effects = {}
+        fx_mgr.parts = {}
+        
     end,
 
     update_lvl = function(self)

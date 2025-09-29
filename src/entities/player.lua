@@ -32,6 +32,7 @@ function Player:init()
         boost_t    = 0,        --boost timer 
         boost_max  = 60,    --maximum boost
         boost_mult = 2,     -- boost multiplier
+        boost      = false,
     })
 
     p.hp = p.max_hp    -- current hit points
@@ -97,9 +98,9 @@ function Player:update()
 
 
     --boosting
-    local boost = false
+    s.boost = false
     if btn(BTN.O) and s.boost_t > 0 then
-        boost = true
+        s.boost = true
         s.boost_t -= 1
     elseif not btn(BTN.O) and s.boost_t < s.boost_max then
         s.boost_t += .5 
@@ -121,7 +122,7 @@ function Player:update()
         local fx_a = { x = s.x, y = s.y, dy = dir_y} --fx args
 
         --boost effect overrides
-        if boost then
+        if s.boost then
             fx_a.rnd_mod = 10
             fx_a.shrink = false
             fx_a.grow = true
@@ -166,8 +167,8 @@ function Player:update()
     end
 
  
-    local max_spd_x = s.max_dx * (boost and s.boost_mult or 1) 
-    local max_spd_y = s.max_dy * (boost and s.boost_mult or 1)
+    local max_spd_x = s.max_dx * (s.boost and s.boost_mult or 1) 
+    local max_spd_y = s.max_dy * (s.boost and s.boost_mult or 1)
 
     --clamp movement speed
     s.dx = mid(-max_spd_x, s.dx, max_spd_x)            --general x axis speed clamp
