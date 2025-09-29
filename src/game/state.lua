@@ -1,4 +1,5 @@
 _f = 0 --global frame counter
+score = 0
 local curr_state = GAME.START
 
 local function main_update()
@@ -10,23 +11,28 @@ local function main_update()
 end
 
 local function main_draw()
+   
     level_mgr.levels[level_mgr.curr_lvl]:draw()
     bullet_mgr:draw()
     enemy_mgr:draw()
     fx_mgr:draw()
     p1:draw()
+    ui:draw()
 end
 
 local function reset_game() 
-    _f = 0
     p1 = Player:init()
 
     enemy_mgr.enemies = {}
     bullet_mgr.bullets = {}
     fx_mgr.effects = {}
 
+    level_mgr.curr_lvl = 1
+    level_mgr.curr_stg = 1
+    score = 0
 end
 
+--transitions between levels
 local function transition_update()
     transition_t -= 1
 
@@ -34,39 +40,29 @@ local function transition_update()
         set_state(GAME.MAIN)
     end
 end
-
 local function transition_draw()
     cprnt("beginning stage "..level_mgr.curr_lvl.."-"..level_mgr.curr_stg, 54)
     cprnt(transition_t)
 end
 
 
-
-function get_state()
-    return curr_state
-end
-
+--getter and setter
+function get_state() return curr_state end
 function set_state(new_state)
-    --reset state transition timer
+    if curr_state == GAME.OVER or curr_state == GAME.START then
+        reset_game()
+    elseif new_state == GAME.OVER then 
+        music(0,0,3)
+    end 
+
+    --reset transition timer
     transition_t = 120
 
     --fade music
     music(-1, 1000) 
-   
     
     log("changing state from "..curr_state.." to "..new_state)
     curr_state = new_state
-
-    
-    local s = get_state()
-    if s == GAME.START then 
-    elseif s == GAME.MAIN then 
-        reset_game()
-    elseif s == GAME.TRANSITION then
-    elseif s == GAME.OVER then 
-        music(0,0,3)
-    elseif s == GAME.WIN then
-    end 
 end
 
 function game_update() 
@@ -91,7 +87,6 @@ end
 
 function game_draw() 
     cls(0)
-
     local s = get_state()
     if s == GAME.START then
         cprnt("pigs fly", 50)

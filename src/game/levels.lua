@@ -8,7 +8,7 @@ level_mgr = {
         if self.curr_stg > 2 then
             self.curr_stg = 1
             self.curr_lvl += 1
-        end 
+        end
     end,
 
 }
@@ -16,15 +16,26 @@ level_mgr = {
 Level = {
     bounds       = {top=0,right=127,btm=127,left=0},--level boundries
     e_types      = {},     --array of enemy types
-    lvl_dur      = 0,      --level duration
+    lvl_dur      = 0,      --level total duration
     lvl_t        = 0,      --level timer
     spwn_tmr     = 5,      --timer to next spawn
-    max_e        = 1,      --max enmies on screen, increases as level progresses
+    max_e        = 1,      --max enmies for level
+    curr_max_e   = 1,
+    reset_lvl  = function(self)
+        self.lvl_t = 0
+        self.curr_max_e = 1
+        
+        enemy_mgr.enemies = {}
+        bullet_mgr.bullets = {}
+        fx_mgr.effects = {}
+    end,
+
     update_lvl = function(self)
         local s = self
+
         s.spwn_tmr -= 1
 
-        if s.spwn_tmr <= 0 and #enemy_mgr.enemies < s.max_e then
+        if s.spwn_tmr <= 0 and #enemy_mgr.enemies < s.curr_max_e then
             
             --select random enemy
             local rnd_i = flr(rnd(#s.e_types)) + 1
@@ -33,36 +44,25 @@ Level = {
             --spawn faster as level progresses
             enemy_mgr:spawn(e_type, {x=140})
             s.spwn_tmr = rnd(60)
-            
         end
 
-         --increment max enemies on screen every 5 seconds
-        if _f % 300 == 0 then
-            s.max_e += 1
+         --increment current max enemies on screen every 5 seconds
+        if _f % 300 == 0 and s.curr_max_e < s.max_e then
+            s.curr_max_e += 1
         end
 
-        --decrement duration every second
+        --increment level timer every second
         if _f % 60 == 0 then
             s.lvl_t += 1
         end
 
-        --next level
+        --next level reset
         if s.lvl_t >= s.lvl_dur then
+            s:reset_lvl()
             level_mgr:nxt_lvl()
-            s.lvl_t = 0
-            s.max_e = 1
         end
     end,
 
-    draw_lvl = function(self)
-        rectfill(0,0,127,9,0)
-        --logging
-        print("max e:      " .. self.max_e, 0,0,8)
-        print("curr en:    "..#enemy_mgr.enemies, 0, 5, 7)
-        print("spwn timer: " .. self.spwn_tmr, 0,10,9)
-        print("lvl timer:  " ..self.lvl_t.."/".. self.lvl_dur, 0,15,10)
-        --
-    end,
 }
 
 function Level:new(o)
@@ -75,8 +75,8 @@ end
 level_mgr.levels[1] = Level:new({
     bounds     = {top=10, right=120, btm=105, left=0},
     e_types    = {"chicken"},
-    lvl_dur    = 60,  
-    lvl_t      = 0,        
+    lvl_dur    = 5,
+    max_e      = 10,  
     --map
     frnt_x     = 0,--front layer x position
     sky_x      = 0,-- sky layer x posistion
@@ -95,18 +95,18 @@ level_mgr.levels[1] = Level:new({
         if self.sky_x < -127 then self.sky_x = 0 end
         if self.frnt_x < -127 then self.frnt_x = 0 end
 
-        self:update_lvl()
-
-        
-        
+        self:update_lvl()        
     end,
 
     draw = function(self) 
-        cls(13)
-        self:draw_lvl()
-        
+        if level_mgr.curr_stg == 1 then
+            cls(12)
+            circfill(19,50,8,10) --sun
+        else
+            cls(13)
+            circfill(24,82,8,9) --sun
+        end
         --map scrolling logic
-        circfill(24,82,8,9) --sun
         --background
         map(16,9,self.back_x,64,16,4)
         map(16,9,128+self.back_x,64,16,4)
@@ -121,14 +121,25 @@ level_mgr.levels[1] = Level:new({
 })
 
 
-
 --level 2
 level_mgr.levels[2] = Level:new({
+    lvl_dur = 5,
     update = function(self)
         self:update_lvl()
     end,
 
     draw = function(self) 
        cprnt('level 2')
+    end,
+})
+
+--boss
+level_mgr.levels[3] = Level:new({
+    update = function(self)
+        self:update_lvl()
+    end,
+
+    draw = function(self) 
+       cprnt('boss approaching')
     end,
 })
