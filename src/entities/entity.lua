@@ -52,6 +52,7 @@ end
 function Entity:die()
     if self.type == 'enemy' then
         fx_mgr:spawn("explode", {x=self.x, y=self.y})
+        score += 10
     end
     del(self.tbl, self)
 end
