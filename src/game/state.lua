@@ -8,6 +8,8 @@ local function main_update()
     p1:update()
     enemy_mgr:update()
     fx_mgr:update()
+    pickup_mgr:update()
+
 end
 
 local function main_draw()
@@ -16,6 +18,7 @@ local function main_draw()
     bullet_mgr:draw()
     enemy_mgr:draw()
     fx_mgr:draw()
+    pickup_mgr:draw()
     p1:draw()
     ui:draw()
 end

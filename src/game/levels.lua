@@ -75,7 +75,7 @@ end
 level_mgr.levels[1] = Level:new({
     bounds     = {top=10, right=120, btm=105, left=0},
     e_types    = {"chicken"},
-    lvl_dur    = 5,
+    lvl_dur    = 60,
     max_e      = 10,  
     --map
     frnt_x     = 0,--front layer x position

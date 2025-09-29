@@ -56,6 +56,28 @@ fx_mgr = {
                 p.dy = -1
             end
         },
+
+        sparkle = {
+            amt=2,
+            sprd=5,
+            c_tbl={7,10,14,12,11},
+            init = function(p)
+                p.dx = (rnd(2)-1)
+                p.dy = (rnd(2)-1)
+                p.die = rnd(5) + 5
+            end
+        },
+
+        ripple = {
+            amt = 1,
+            sprd = 1,
+            c=7,
+            r = 0,
+            rate = 2,
+            die = 6,
+            grow = true,
+            fill = false,
+        },
         muzz_flash = {},
     }
 }
@@ -78,6 +100,7 @@ function fx_mgr:spawn(type,args)
             x      = a.x + rnd(a.sprd) - a.sprd / 2,
             y      = a.y + rnd(a.sprd) - a.sprd / 2,
             r      = a.r or 1,       --radius
+            c      = a.c or 7,
             c_tbl  = a.c_tbl or {},  --list of colors
             t      = 0,              --frame counter
             die    = a.die or 30,     --life span of particle 
@@ -88,6 +111,7 @@ function fx_mgr:spawn(type,args)
             shrink = a.shrink or false, 
             rate = a.rate or .1, 
             rnd_mod = a.rnd_mod,
+            fill   = a.fill == nil and true or a.fill, 
         })
         
         --calls init for dynamic variables that need to be reinitialized every iteration

@@ -53,6 +53,11 @@ function Entity:die()
     if self.type == 'enemy' then
         fx_mgr:spawn("explode", {x=self.x, y=self.y})
         score += 10
+
+        --spawn pickups 10% of the time 
+        if rnd(1) < .1 then
+            pickup_mgr:spawn(self.x,self.y)
+        end
     end
     del(self.tbl, self)
 end

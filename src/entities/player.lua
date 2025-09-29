@@ -49,6 +49,10 @@ function Player:update()
         s.god_t -= 1
     end
 
+    if self.hp > self.max_hp then
+        self.hp = self.max_hp
+    end
+
     --directions
     local up = btn(BTN.UP)
     local down = btn(BTN.DOWN)

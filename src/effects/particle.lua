@@ -13,12 +13,14 @@ function Particle:update()
     s.t += 1
     
     --color changing
-    if     s.t/s.die < 1/#s.c_tbl then s.c = s.c_tbl[1] 
-    elseif s.t/s.die < 2/#s.c_tbl then s.c = s.c_tbl[2]
-    elseif s.t/s.die < 3/#s.c_tbl then s.c = s.c_tbl[3]
-    elseif s.t/s.die < 4/#s.c_tbl then s.c = s.c_tbl[4]
-    elseif s.t/s.die < 5/#s.c_tbl then s.c = s.c_tbl[5]
-    else   s.c = s.c_tbl[6]
+    if #s.c_tbl > 1 then
+        if     s.t/s.die < 1/#s.c_tbl then s.c = s.c_tbl[1] 
+        elseif s.t/s.die < 2/#s.c_tbl then s.c = s.c_tbl[2]
+        elseif s.t/s.die < 3/#s.c_tbl then s.c = s.c_tbl[3]
+        elseif s.t/s.die < 4/#s.c_tbl then s.c = s.c_tbl[4]
+        elseif s.t/s.die < 5/#s.c_tbl then s.c = s.c_tbl[5]
+        else   s.c = s.c_tbl[6]
+        end
     end
 
     --physics
@@ -34,7 +36,9 @@ end
 function Particle:draw()
     if self.r <= 1 then
         pset(self.x, self.y, self.c)
-    else
+    elseif self.fill then
         circfill(self.x, self.y, self.r, self.c)
+    else 
+        circ(self.x, self.y, self.r, self.c)
     end
 end
