@@ -12,7 +12,7 @@ Player = Entity:new()
 
 function Player:init() 
     
-   return Player:new({
+   local p = Player:new({
         type       = 'player',
         x          = 64,
         y          = 64,
@@ -24,16 +24,18 @@ function Player:init()
         g          = 0.03,  --gravity
         f          = 0.85,  --friction
         acc        = 1,     --acceleration
-        hp         = 10,     --hit points
+        max_hp     = 10,    
         cooldown   = 0,     -- timer 
         fire_r     = 8,    --fire rate, frames between shots
         god_t      = 0,     --invulnerability timer
-        flash_t    = 0,      --flash sprite
   
         boost_t    = 0,        --boost timer 
         boost_max  = 60,    --maximum boost
         boost_mult = 2,     -- boost multiplier
     })
+
+    p.hp = p.max_hp    -- current hit points
+    return p
 end
 
 function Player:update()
@@ -45,9 +47,6 @@ function Player:update()
     --taking dmg
     if s.god_t > 0 then
         s.god_t -= 1
-        s.flash_t += 1
-    else
-        s.flash_t = 0
     end
 
     --directions
@@ -101,6 +100,8 @@ function Player:update()
     elseif not btn(BTN.O) and s.boost_t < s.boost_max then
         s.boost_t += .5 
     end
+    --fixes ui issue of boost_t getting below 0
+    if s.boost_t < 0 then s.boost_t = 0 end
 
     --spawn jet fx
     if get_state() == GAME.MAIN then
@@ -191,25 +192,10 @@ function Player:draw()
 
     --flash effect
     --every 3 frames skips 3 frames, remainder loops 0 to 6
-    if self.god_t > 0 and (self.flash_t % 6 < 3) then
+    if self.god_t > 0 and (_f % 6 < 3) then
         return --skip drawing sprite
     end
     spr(self.spr, self.x, self.y, 1, 1, invert)
 end
 
 
-function draw_boost_meter(player)
-
-    local meter_x, meter_y = 4,4
-    local meter_w = 30
-    local meter_h = 2
-    local boost_w = player.boost_t / player.boost_max * meter_w
-
-    --background
-    rectfill(meter_x, meter_y, meter_x + meter_w, meter_y + meter_h, 1)
-    --boost bar
-    rectfill(meter_x, meter_y, meter_x + boost_w, meter_y + meter_h, 11)
-    --outline
-    rect(meter_x, meter_y, meter_x + meter_w, meter_y + meter_h, 7)
-
-end
