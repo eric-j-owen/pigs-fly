@@ -58,13 +58,13 @@ fx_mgr = {
         },
 
         sparkle = {
-            amt=2,
-            sprd=5,
+            amt=1,
+            sprd=10,
             c_tbl={7,10,14,12,11},
-            init = function(p)
-                p.dx = (rnd(2)-1)
-                p.dy = (rnd(2)-1)
-                p.die = rnd(5) + 5
+            dy = -.35,
+            rate=.2,
+            init = function(p)               
+                p.die = rnd(5) + 20
             end
         },
 

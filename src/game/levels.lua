@@ -28,6 +28,7 @@ Level = {
         enemy_mgr.enemies = {}
         bullet_mgr.bullets = {}
         fx_mgr.parts = {}
+        pickup_mgr.pickups = {}
         
     end,
 

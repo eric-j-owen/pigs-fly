@@ -55,7 +55,7 @@ function Entity:die()
         score += 10
 
         --spawn pickups 10% of the time 
-        if rnd(1) < .1 then
+        if rnd(1) < .2 then
             pickup_mgr:spawn(self.x,self.y)
         end
     end
