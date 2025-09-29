@@ -9,9 +9,10 @@ fx_mgr = {
             shrink    = true,
             rate   = .2,
             r=2.5,
+            rnd_mod = 0,
             init = function(p)
                 p.dx = rnd(.5)-.25
-                p.die = rnd(10)
+                p.die = rnd(10) + p.rnd_mod
             end,
         },
 
@@ -33,10 +34,10 @@ fx_mgr = {
         explode = {
             amt   = 20,
             sprd  = 8,
-            r     =10,
+            r     =12,
             c_tbl = {7,10,9,8,2,5},
             shrink  = true,
-            rate  = .5,
+            rate  = .8,
             grav  = true,
             init = function(p)
                 p.dx = rnd(2) -1
@@ -86,6 +87,7 @@ function fx_mgr:spawn(type,args)
             grow   = a.grow or false,  
             shrink = a.shrink or false, 
             rate = a.rate or .1, 
+            rnd_mod = a.rnd_mod,
         })
         
         --calls init for dynamic variables that need to be reinitialized every iteration
