@@ -1,20 +1,25 @@
 level_mgr = {
     levels = {},
-    curr_lvl = 1,
-    curr_stg = 1,
+    curr_lvl = 2,
+    curr_stg = 2,
     nxt_lvl = function(self)
-        set_state(GAME.TRANSITION)
         self.curr_stg += 1
         if self.curr_stg > 2 then
             self.curr_stg = 1
             self.curr_lvl += 1
+        end
+        
+        if self.curr_lvl > 3 then
+            set_state(GAME.WIN)
+        else
+            set_state(GAME.TRANSITION)
         end
     end,
 
 }
 
 Level = {
-    bounds       = {top=0,right=127,btm=127,left=0},--level boundries
+    bounds       = {top=10,right=120,btm=120,left=0},--level boundries
     e_types      = {},     --array of enemy types
     lvl_dur      = 0,      --level total duration
     lvl_t        = 0,      --level timer
@@ -29,7 +34,7 @@ Level = {
         bullet_mgr.bullets = {}
         fx_mgr.parts = {}
         pickup_mgr.pickups = {}
-        
+
     end,
 
     update_lvl = function(self)
@@ -64,7 +69,6 @@ Level = {
             level_mgr:nxt_lvl()
         end
     end,
-
 }
 
 function Level:new(o)
@@ -76,18 +80,22 @@ end
 --level 1
 level_mgr.levels[1] = Level:new({
     bounds     = {top=10, right=120, btm=105, left=0},
-    e_types    = {"chicken"},
     lvl_dur    = 60,
-    max_e      = 10,  
     --map
     frnt_x     = 0,--front layer x position
     sky_x      = 0,-- sky layer x posistion
     back_x     = 0,-- back layer x posistion
     
     update = function(self)
-        if level_mgr.curr_stg == 2 then
+        --stage presets
+        if level_mgr.curr_stg == 1 then
+            self.e_types = { "chicken"}
+            self.max_e = 5
+        else 
             self.e_types = { "chicken","octopus"}
+            self.max_e = 10
         end
+
         --map
         self.back_x -= .5
         self.sky_x -= .25
@@ -119,29 +127,84 @@ level_mgr.levels[1] = Level:new({
         --foreground layer
         map(0,0,self.frnt_x,0,16,16)
         map(0,0,128+self.frnt_x,0,16,16)
+
+
+        cprnt(#enemy_mgr.enemies)
+
     end,
 })
 
 
 --level 2
 level_mgr.levels[2] = Level:new({
-    lvl_dur = 5,
+    lvl_dur = 60,
+    e_types    = {"octopus"},
+     --map
+    frnt_x     = 0,
+    mid_x      = 0,
+    back_x     = 0,
+   
+    
     update = function(self)
         self:update_lvl()
+
+        self.back_x -= .25
+        self.mid_x -= .5
+        self.frnt_x -= .75
+
+        if self.back_x < -127 then self.back_x = 0 end
+        if self.mid_x < -127 then self.mid_x = 0 end
+        if self.frnt_x < -127 then self.frnt_x = 0 end
+       
     end,
 
     draw = function(self) 
-       cprnt('level 2')
+        if level_mgr.curr_stg == 1 then
+            cls(13)
+            circfill(19,50,8,6) --moon
+        else
+            cls(1)
+           
+            circfill(24,40,8,7) --moon
+
+            map(0,24,0,10,15,15) --stars
+        end
+
+
+        --map scrolling logic
+        --background
+        map(0,16,self.back_x,24,15,8)
+        map(0,16,128+self.back_x,24,15,8)
+
+        --mid layer
+        map(14,16,self.mid_x,32,10,8)
+        map(14,16,128+self.mid_x,32,10,8)
+
+        
+    
+    end,
+
+    draw_front = function(self)
+            --foreground layer
+        map(27,16,self.frnt_x,40,15,24)
+        map(27,16,128+self.frnt_x,40,15,24)
     end,
 })
 
 --boss
 level_mgr.levels[3] = Level:new({
+    lvl_dur = 60,
+    e_types    = {"octopus"},
+
     update = function(self)
         self:update_lvl()
+
+        --starfield
+        if _f % 30 == 0 then fx_mgr:spawn('stars_far') end
+        if _f % 40 == 0 then fx_mgr:spawn('stars_mid') end
+        if _f % 50 == 0 then fx_mgr:spawn('stars_close') end
     end,
 
     draw = function(self) 
-       cprnt('boss approaching')
     end,
 })

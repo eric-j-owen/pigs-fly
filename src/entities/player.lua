@@ -1,10 +1,30 @@
 --sprites
-local SPR_IDL = 1
-local SPR_SIDE = 2
-local SPR_DWN = 3
-local SPR_UP = 4
-local SPR_FALL = 5
-local SPR_DWN_TURN = 6
+
+local def_spr = {
+    IDL = 1,
+    SIDE = 2,
+    DWN = 3,
+    UP = 4,
+    FALL = 5,
+    DWN_TURN = 6,
+}
+
+local alt_spr = {
+    SIDE = 50,
+    DWN = 51,
+    UP = 52,
+    FALL = 53,
+    DWN_TURN = 54,
+}
+
+
+local function get_spr()
+    if level_mgr.curr_lvl == 3 then
+        return alt_spr
+    else
+        return def_spr
+    end
+end
 
 
 Player = Entity:new()
@@ -16,7 +36,7 @@ function Player:init()
         type       = 'player',
         x          = 64,
         y          = 64,
-        spr        = SPR_IDL,
+        spr        = nil,
         h          = 8,
         w          = 8,
         max_dx     = 0.75,
@@ -43,7 +63,11 @@ function Player:update()
     local s = self
 
     --map boundries
-    bnds = level_mgr.levels[level_mgr.curr_lvl].bounds
+    local spr = get_spr()
+
+    local lvl = level_mgr.levels[level_mgr.curr_lvl]
+    if not lvl then return end
+    bnds = lvl.bounds
 
     --taking dmg
     if s.god_t > 0 then
@@ -77,23 +101,23 @@ function Player:update()
     --input
     if up then 
         s.dy -= s.acc 
-        s.spr = SPR_UP
+        s.spr = spr.UP
     end
 
     if down then 
         s.dy += s.acc
-        s.spr = SPR_DWN
+        s.spr = spr.DWN
     end
 
     if left then 
         s.dx -= s.acc 
-        s.spr = SPR_SIDE
+        s.spr = spr.SIDE
 
     end
 
     if right then 
         s.dx += s.acc 
-        s.spr = SPR_SIDE
+        s.spr = spr.SIDE
     end
 
 
@@ -155,15 +179,15 @@ function Player:update()
     --turning while flying down
     if s.dy > 0.25 then
         if left or right then
-            s.spr = SPR_DWN_TURN
+            s.spr = spr.DWN_TURN
         else
-            s.spr = SPR_DWN --reset
+            s.spr = spr.DWN --reset
         end
     end
 
     -- falling sprite
     if isFalling or s.y >= bnds.btm then
-        s.spr = SPR_FALL
+        s.spr = spr.FALL
     end
 
  

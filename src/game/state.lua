@@ -9,18 +9,19 @@ local function main_update()
     enemy_mgr:update()
     fx_mgr:update()
     pickup_mgr:update()
-
 end
 
 local function main_draw()
+    local lvl = level_mgr.levels[level_mgr.curr_lvl]
    
-    level_mgr.levels[level_mgr.curr_lvl]:draw()
+    lvl:draw()
     pickup_mgr:draw()
     bullet_mgr:draw()
     fx_mgr:draw('back')
     enemy_mgr:draw()
     p1:draw()
     fx_mgr:draw('front')
+    if lvl.draw_front then lvl:draw_front() end
     ui:draw()
 end
 
@@ -31,8 +32,8 @@ local function reset_game()
     bullet_mgr.bullets = {}
     fx_mgr.effects = {}
 
-    level_mgr.curr_lvl = 1
-    level_mgr.curr_stg = 1
+    -- level_mgr.curr_lvl = 1
+    -- level_mgr.curr_stg = 1
     score = 0
 end
 
@@ -67,6 +68,7 @@ function set_state(new_state)
     
     log("changing state from "..curr_state.." to "..new_state)
     curr_state = new_state
+    
 end
 
 function game_update() 
@@ -80,12 +82,13 @@ function game_update()
     elseif s == GAME.TRANSITION then
         transition_update()
     elseif s == GAME.OVER then
-        p1:update()
         if btnp(BTN.X) then 
             set_state(GAME.TRANSITION) 
         end
     elseif s == GAME.WIN then
-    
+        if btnp(BTN.X) then 
+            set_state(GAME.START) 
+        end
     end 
 end
 
@@ -102,8 +105,8 @@ function game_draw()
     elseif s == GAME.OVER then
         cprnt('game over', 50)
         cprnt("PRESS x TO TRY AGAIN", 70)
-        p1:draw()
     elseif s == GAME.WIN then
-    
+        cprnt('you win', 50)
+        cprnt("PRESS x TO START AGAIN", 70)
     end 
 end

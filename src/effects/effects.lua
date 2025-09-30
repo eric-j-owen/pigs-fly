@@ -91,6 +91,46 @@ fx_mgr = {
             dx = 3,
             shape = 'rect'
         },
+
+        stars_far = {
+            amt = 1,
+            sprd = 0,
+            c = 5,
+            r = 0,
+            dx = -.2,
+            dy = 0,
+            x = 130,
+            die = 9999,
+            init = function(p) 
+                p.y=rnd(128)
+            end
+        }, 
+        stars_mid = {
+            amt = 1,
+            sprd = 0,
+            c = 13,
+            r = 0,
+            dx = -.35,
+            dy = 0,
+            x = 130,
+            die = 9999,
+            init = function(p) 
+                p.y=rnd(128)
+            end
+        },
+        stars_close = {
+            amt = 1,
+            sprd = 0,
+            c = 7,
+            r = 0,
+            dx = -.5,
+            dy = 0,
+            x = 130,
+            die = 9999,
+            init = function(p) 
+                p.y=rnd(128)
+            end
+        }
     }
 }
 
@@ -109,8 +149,8 @@ function fx_mgr:spawn(type,args)
     --create particles
     for i=1,a.amt do
         local p = Particle:new({
-            x      = a.x + rnd(a.sprd) - a.sprd / 2,
-            y      = a.y + rnd(a.sprd) - a.sprd / 2,
+            x      = (a.x or 0) + rnd(a.sprd) - a.sprd / 2,
+            y      = (a.y or 0) + rnd(a.sprd) - a.sprd / 2,
             r      = a.r or 1,       --radius
             c      = a.c or 7,
             c_tbl  = a.c_tbl or {},  --list of colors
@@ -142,6 +182,9 @@ function fx_mgr:update()
         if p.t >= p.die then
             del(self.parts, p)
         end
+
+        --cleanup
+        if p.x < 0 then del(self.parts, p) end
     end
 end
 
