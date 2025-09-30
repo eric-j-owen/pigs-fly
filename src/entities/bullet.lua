@@ -71,6 +71,10 @@ function bullet_mgr:shoot(type, args)
     })
     add(self.bullets, new_b)
 
+    if new_b.spr == 7 then -- player's bullet spr
+        fx_mgr:spawn('muzz_flash', {x=p1.x+2,y=p1.y+1}) 
+    end
+
 end
 
 function bullet_mgr:update()

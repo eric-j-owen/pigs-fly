@@ -79,7 +79,18 @@ fx_mgr = {
             fill = false,
         },
         
-        muzz_flash = {},
+        muzz_flash = {
+            layer="front",
+            amt = 1,
+            sprd = 1,
+            r = 1.1,
+            -- c = 8,
+            c_tbl={7,7,8,8,8},
+            die = 5,
+            dy = 0,
+            dx = 3,
+            shape = 'rect'
+        },
     }
 }
 
@@ -113,6 +124,8 @@ function fx_mgr:spawn(type,args)
             rate = a.rate or .1, 
             rnd_mod = a.rnd_mod,
             fill   = a.fill == nil and true or a.fill, 
+            layer = a.layer or 'back',
+            shape = a.shape or 'circle'
         })
         
         --calls init for dynamic variables that need to be reinitialized every iteration
@@ -126,14 +139,17 @@ end
 function fx_mgr:update()
     for p in all(self.parts) do
         p:update()
-        if p.t > p.die then
+        if p.t >= p.die then
             del(self.parts, p)
         end
     end
 end
 
-function fx_mgr:draw()
-   for p in all(self.parts) do
-        p:draw()
+function fx_mgr:draw(layer)
+   
+    for p in all(self.parts) do
+        if p.layer == layer then
+            p:draw()
+        end
    end
 end

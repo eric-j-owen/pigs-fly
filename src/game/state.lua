@@ -17,9 +17,10 @@ local function main_draw()
     level_mgr.levels[level_mgr.curr_lvl]:draw()
     pickup_mgr:draw()
     bullet_mgr:draw()
-    fx_mgr:draw()
+    fx_mgr:draw('back')
     enemy_mgr:draw()
     p1:draw()
+    fx_mgr:draw('front')
     ui:draw()
 end
 

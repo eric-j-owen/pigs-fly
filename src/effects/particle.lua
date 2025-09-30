@@ -36,6 +36,8 @@ end
 function Particle:draw()
     if self.r <= 1 then
         pset(self.x, self.y, self.c)
+    elseif  self.shape == 'rect' then
+        rectfill(self.x, self.y, self.x + 4, self.y+2, self.c)
     elseif self.fill then
         circfill(self.x, self.y, self.r, self.c)
     else 

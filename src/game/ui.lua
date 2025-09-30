@@ -6,7 +6,7 @@ function ui:draw()
     self.draw_hp(p1)
 
     --score
-    print("score:"..score,50,2,7)
+    print("score:"..score,40,2,7)
 
     self.draw_timer()
 end

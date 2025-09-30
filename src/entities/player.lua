@@ -26,7 +26,7 @@ function Player:init()
         acc        = 1,     --acceleration
         max_hp     = 10,    
         cooldown   = 0,     -- timer 
-        fire_r     = 8,    --fire rate, frames between shots
+        fire_r     = 7,    --fire rate, frames between shots
         god_t      = 0,     --invulnerability timer
   
         boost_t    = 0,        --boost timer 
@@ -68,7 +68,7 @@ function Player:update()
 
       --shooting 
     if btn(BTN.X) and self.cooldown <= 0 then
-        bullet_mgr:shoot('player', {x=s.x, y=s.y})
+        bullet_mgr:shoot('player', {x=s.x+9, y=s.y+2})
         s.cooldown = s.fire_r
     else
         s.cooldown -= 1 
