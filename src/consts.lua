@@ -17,3 +17,9 @@ GAME = {
     OVER       = 4,
     TRANSITION = 5,
 }
+
+
+E_STATE = {
+    DEFAULT = "default",
+    UNDER_ATK = 'under-atk',
+}

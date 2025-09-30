@@ -127,10 +127,6 @@ level_mgr.levels[1] = Level:new({
         --foreground layer
         map(0,0,self.frnt_x,0,16,16)
         map(0,0,128+self.frnt_x,0,16,16)
-
-
-        cprnt(#enemy_mgr.enemies)
-
     end,
 })
 
@@ -138,7 +134,7 @@ level_mgr.levels[1] = Level:new({
 --level 2
 level_mgr.levels[2] = Level:new({
     lvl_dur = 60,
-    e_types    = {"octopus"},
+     e_types    = {"bomber"},
      --map
     frnt_x     = 0,
     mid_x      = 0,
@@ -146,7 +142,14 @@ level_mgr.levels[2] = Level:new({
    
     
     update = function(self)
+   
+
         self:update_lvl()
+        if level_mgr.curr_stg == 1 then
+            --limit bombers
+        else
+            --no limit bombers
+        end
 
         self.back_x -= .25
         self.mid_x -= .5
@@ -179,8 +182,6 @@ level_mgr.levels[2] = Level:new({
         --mid layer
         map(14,16,self.mid_x,32,10,8)
         map(14,16,128+self.mid_x,32,10,8)
-
-        
     
     end,
 
@@ -194,10 +195,16 @@ level_mgr.levels[2] = Level:new({
 --boss
 level_mgr.levels[3] = Level:new({
     lvl_dur = 60,
-    e_types    = {"octopus"},
+    
 
     update = function(self)
         self:update_lvl()
+        if level_mgr.curr_stg == 1 then
+            e_types = {"alien", "jeff"}
+            --limit jeffs
+        else
+            e_types = {"boss"}
+        end
 
         --starfield
         if _f % 30 == 0 then fx_mgr:spawn('stars_far') end
