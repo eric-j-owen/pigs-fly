@@ -1,15 +1,20 @@
 level_mgr = {
     levels = {},
-    curr_lvl = 2,
+    curr_lvl = 3,
     curr_stg = 2,
     nxt_lvl = function(self)
-        self.curr_stg += 1
-        if self.curr_stg > 2 then
-            self.curr_stg = 1
-            self.curr_lvl += 1
+        local s = self
+        local lvl = s.levels[s.curr_lvl]
+
+        s.curr_stg += 1
+        
+        if s.curr_stg > lvl.n_stgs then
+            s.curr_stg = 1
+            s.curr_lvl += 1   
         end
         
-        if self.curr_lvl > 3 then
+   
+        if s.curr_lvl > 3 then
             set_state(GAME.WIN)
         else
             set_state(GAME.TRANSITION)
@@ -21,11 +26,13 @@ level_mgr = {
 Level = {
     bounds       = {top=10,right=120,btm=120,left=0},--level boundries
     e_types      = {},     --array of enemy types
-    lvl_dur      = 0,      --level total duration
+    lvl_dur      = 60,      --level total duration
     lvl_t        = 0,      --level timer
     spwn_tmr     = 5,      --timer to next spawn
     max_e        = 1,      --max enmies for level
     curr_max_e   = 1,
+    n_stgs       = 2,     --total stages for level
+    isBoss       = false,  --flag to change level logic on boss fight
     reset_lvl  = function(self)
         self.lvl_t = 0
         self.curr_max_e = 1
@@ -49,12 +56,12 @@ Level = {
             local e_type = s.e_types[rnd_i]   --string of enemy name
 
             --spawn faster as level progresses
-            enemy_mgr:spawn(e_type, {x=140})
-            s.spwn_tmr = rnd(60)
+            enemy_mgr:spawn(e_type, {x=128})
+            s.spwn_tmr = rnd(30) + 60
         end
 
-         --increment current max enemies on screen every 5 seconds
-        if _f % 300 == 0 and s.curr_max_e < s.max_e then
+         --increment current max enemies on screen every x frames
+        if _f % 120 == 0 and s.curr_max_e < s.max_e then
             s.curr_max_e += 1
         end
 
@@ -64,7 +71,7 @@ Level = {
         end
 
         --next level reset
-        if s.lvl_t >= s.lvl_dur then
+        if s.lvl_t >= s.lvl_dur and not s.isBoss then
             s:reset_lvl()
             level_mgr:nxt_lvl()
         end
@@ -80,7 +87,6 @@ end
 --level 1
 level_mgr.levels[1] = Level:new({
     bounds     = {top=10, right=120, btm=105, left=0},
-    lvl_dur    = 60,
     --map
     frnt_x     = 0,--front layer x position
     sky_x      = 0,-- sky layer x posistion
@@ -133,23 +139,16 @@ level_mgr.levels[1] = Level:new({
 
 --level 2
 level_mgr.levels[2] = Level:new({
-    lvl_dur = 60,
-     e_types    = {"bomber"},
+    e_types    = {"octopus","bomber", "chicken"},
+    max_e = 12,
+    n_stgs= 1,
      --map
     frnt_x     = 0,
     mid_x      = 0,
     back_x     = 0,
    
-    
     update = function(self)
-   
-
         self:update_lvl()
-        if level_mgr.curr_stg == 1 then
-            --limit bombers
-        else
-            --no limit bombers
-        end
 
         self.back_x -= .25
         self.mid_x -= .5
@@ -162,17 +161,9 @@ level_mgr.levels[2] = Level:new({
     end,
 
     draw = function(self) 
-        if level_mgr.curr_stg == 1 then
-            cls(13)
-            circfill(19,50,8,6) --moon
-        else
-            cls(1)
-           
-            circfill(24,40,8,7) --moon
-
-            map(0,24,0,10,15,15) --stars
-        end
-
+        cls(1)
+        circfill(24,40,8,7) --moon
+        map(0,24,0,10,15,15) --stars
 
         --map scrolling logic
         --background
@@ -194,24 +185,49 @@ level_mgr.levels[2] = Level:new({
 
 --boss
 level_mgr.levels[3] = Level:new({
-    lvl_dur = 60,
+    max_e = 15,
+    e_types = {"bomber", "alien"},
+    max_jeff= 1,
+    curr_jeff=0,
+    n_stgs = 3,
     
 
     update = function(self)
         self:update_lvl()
-        if level_mgr.curr_stg == 1 then
-            e_types = {"alien", "jeff"}
-            --limit jeffs
-        else
-            e_types = {"boss"}
-        end
 
         --starfield
         if _f % 30 == 0 then fx_mgr:spawn('stars_far') end
         if _f % 40 == 0 then fx_mgr:spawn('stars_mid') end
         if _f % 50 == 0 then fx_mgr:spawn('stars_close') end
+
+        --stages
+        if level_mgr.curr_stg == 1 then
+           
+        elseif level_mgr.curr_stg == 2 then
+           --jeff spawning logic
+            self.curr_jeff = 0 --reset
+            --count jeffs
+            for e in all(enemy_mgr.enemies) do
+                if e.e_type == 'jeff' then
+                    self.curr_jeff += 1
+                end
+            end
+            --spawn jeffs offset of 60 frames
+            if self.curr_jeff < self.max_jeff and _f%60==0  then
+                enemy_mgr:spawn('jeff',{x=128})
+            end
+        else --boss stage 
+            self.isBoss = true
+            self.e_types = {"boss"}
+            self.max_e = 1
+        end
+
+
     end,
 
-    draw = function(self) 
+    draw = function(self)
+        if level_mgr.curr_stg == 3 then
+            cprnt("enemy is approaching")
+        end
     end,
 })
