@@ -30,11 +30,10 @@ enemy_mgr = {
             ani_spd  = .1,
             spwn_y   = 35,
             init     = function(self) 
-                --values for random movement
-                self.a = 20                   --amplitutde
-                self.b = rnd(.005) + rnd(.01) --period 
-                self.c = rnd(1)               --phase shift
-                self.d = self.spwn_y          --vertical shift
+                self.a = 20                  
+                self.b = rnd(.005) + rnd(.01) 
+                self.c = 1           
+                self.d = self.spwn_y          
             end,
        
         },
@@ -55,17 +54,16 @@ enemy_mgr = {
             cooldown = 0,      
             fire_r   = 120,
             init     = function(self) 
-                --values for random movement
-                self.a = 5                  --amplitutde
-                self.b = rnd(.008) + rnd(.01) --period 
-                self.c = rnd(1)               --phase shift
-                self.d = self.spwn_y          --vertical shift
+                self.a = 5                 
+                self.b = rnd(.008) + rnd(.01) 
+                self.c = 1             
+                self.d = self.spwn_y        
             end,
         },
         alien = {
             e_type = "alien",
             hp     = 2,
-            pts    = 5,
+            pts    = 12,
             sprites= {28,29,30,31},
             h      = 8,
             w      = 8,
@@ -73,13 +71,13 @@ enemy_mgr = {
             spr_h  = 1,
             dx       = 0.5,
             ani_spd  = .1,
-            spwn_y   = 64,
+            spwn_y   = 80,
             cooldown = 60,      
             fire_r   = 180,
             init     = function(self) 
                 self.a = 20                  
                 self.b = rnd(.005) + rnd(.01)  
-                self.c = rnd(1)               
+                self.c = rnd(1.5)               
                 self.d = self.spwn_y        
             end,
         },
@@ -88,7 +86,7 @@ enemy_mgr = {
             state  = "init",
             hp     = 20,
             sprites= {8,10},
-            pts    = 1000,
+            pts    = 100,
             h      = 16,
             w      = 16,
             spr_w  = 2,
@@ -96,13 +94,16 @@ enemy_mgr = {
             spwn_y = 64,
             dx = .5,
             ani_spd  = .1,
+            cooldown = 60,      
+            fire_r   = 180,
             init     = function(self) 
                 self.a = 2                  
-                self.b = rnd(.005) + rnd(.01)  
-                self.c = rnd(1)               
+                self.b = .015
+                self.c = 20000            
                 self.d = self.spwn_y        
             end,
         },
+        
         boss = {}
     }
 }
@@ -122,6 +123,7 @@ function enemy_mgr:spawn(type, args)
 
     local new_e = Enemy:new({
         init    = e.init,
+        state   = e.state,
         tbl     = self.enemies,
         type    = 'enemy',
         e_type  = e.e_type,
@@ -207,6 +209,8 @@ end
 
 function enemy_mgr:draw()
     for e in all(self.enemies) do
+        --debugging
+        -- rect(e.x, e.y, e.x + e.w, e.y + e.h, 8)
 
         if e.flash then
             for i=0,15 do pal(i, 7) end
