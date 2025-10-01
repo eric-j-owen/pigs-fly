@@ -5,6 +5,7 @@ enemy_mgr = {
         chicken = {
             e_type  = 'chicken',
             hp       = 3,
+            pts      = 10,
             sprites  = {44,45,46,47},
             h        = 6,
             w        = 5,
@@ -20,6 +21,7 @@ enemy_mgr = {
         octopus = {
             e_type = "octopus",
             hp       = 2,
+            pts      = 5,
             sprites  = {60,61,62,63},
             h        = 5,
             w        = 4,
@@ -40,6 +42,7 @@ enemy_mgr = {
         bomber = {
             e_type = "bomber",
             hp       = 8,
+            pts      = 20,
             sprites  = {40,42},
             h        = 13,
             w        = 14,
@@ -49,7 +52,8 @@ enemy_mgr = {
             dx       = 0.25,
             ani_spd  = .08,
             spwn_y   = 20,
-            fire_r   = 60,
+            cooldown = 0,      
+            fire_r   = 120,
             init     = function(self) 
                 --values for random movement
                 self.a = 5                  --amplitutde
@@ -60,11 +64,44 @@ enemy_mgr = {
         },
         alien = {
             e_type = "alien",
-
+            hp     = 2,
+            pts    = 5,
+            sprites= {28,29,30,31},
+            h      = 8,
+            w      = 8,
+            spr_w  = 1,
+            spr_h  = 1,
+            dx       = 0.5,
+            ani_spd  = .1,
+            spwn_y   = 64,
+            cooldown = 60,      
+            fire_r   = 180,
+            init     = function(self) 
+                self.a = 20                  
+                self.b = rnd(.005) + rnd(.01)  
+                self.c = rnd(1)               
+                self.d = self.spwn_y        
+            end,
         },
         jeff = {
             e_type = "jeff",
-
+            state  = "init",
+            hp     = 20,
+            sprites= {8,10},
+            pts    = 1000,
+            h      = 16,
+            w      = 16,
+            spr_w  = 2,
+            spr_h  = 2,
+            spwn_y = 64,
+            dx = .5,
+            ani_spd  = .1,
+            init     = function(self) 
+                self.a = 2                  
+                self.b = rnd(.005) + rnd(.01)  
+                self.c = rnd(1)               
+                self.d = self.spwn_y        
+            end,
         },
         boss = {}
     }
@@ -98,6 +135,7 @@ function enemy_mgr:spawn(type, args)
         dy      = e.dy,
         g       = e.g,
         behavior= Behavior[e.e_type], --assign behavior function 
+        pts     = e.pts,
         
         --animation and sprites
         spr_w   = e.spr_w or 1,
@@ -111,9 +149,16 @@ function enemy_mgr:spawn(type, args)
         --shooting
         cooldown= e.cooldown,
         fire_r  = e.fire_r,
+        rammed  = false,
     })
 
     if  e.init then  new_e:init(new_e) end
+
+    --update spawn location for level 2
+    if level_mgr.curr_lvl == 2 and e.e_type == 'octopus' then
+        e.spwn_y = 90
+    end
+
     add(self.enemies, new_e)
 end
 
@@ -130,13 +175,20 @@ function enemy_mgr:update()
         --collisions
         if coll(e, p1) then
             p1:take_dmg(1)
-
-            if p1.boost then
-                e:take_dmg(3)
+            --players ram attack, ensures enemy is only hit once per boost
+            if p1.boost and not e.rammed then
+                e:take_dmg(5)
+                e.rammed = true
             end
         end
 
-       
+        --reset ram attack flag
+        if not p1.boost then
+            for e in all(enemy_mgr.enemies) do
+                e.rammed = false
+            end
+        end
+
         --death
         if e.hp <= 0 then 
             e:die()
@@ -155,6 +207,7 @@ end
 
 function enemy_mgr:draw()
     for e in all(self.enemies) do
+
         if e.flash then
             for i=0,15 do pal(i, 7) end
             spr(e.spr,e.x,e.y, e.spr_w, e.spr_h)
