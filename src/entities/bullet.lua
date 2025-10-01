@@ -50,7 +50,7 @@ function Bullet:update()
     end
 
     --egg logic 
-    if self.spr == 19 and self.y >= 112 then
+    if self.spr == 19 and self.y >= 112 and level_mgr.curr_lvl == 1 then
         self.spr = 20
         self.dy = 0
         self.dx = -.75
