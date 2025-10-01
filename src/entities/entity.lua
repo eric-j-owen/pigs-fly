@@ -9,13 +9,6 @@ Entity = {
     spr_h  = 1,    --sprite height 1 = 1 tile 
     dx     = 0,    --change in x
     dy     = 0,    --change in y
-
-    --animation
-    beg_spr  = 0,
-    end_spr  = 0,
-    ani_t    = 0,  --animation timer
-    ani_spd  = 1,
-
 }
 
 --constructor
@@ -49,7 +42,7 @@ end
 function Entity:die()
     if self.type == 'enemy' then
         fx_mgr:spawn("explode", {x=self.x + (self.w / 2), y=self.y + (self.h /2)})
-        score += 10
+        score += self.pts
 
         --spawn pickups 10% of the time 
         if rnd(1) < .2 then
