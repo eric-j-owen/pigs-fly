@@ -32,7 +32,7 @@ function Entity:take_dmg(dmg)
 
     else 
         self.flash = 4 --enemy flashing when taking dmg
-        self.state = E_STATE.UNDER_ATK
+        self.under_atk = true
     end
 
     self.hp -= dmg
